@@ -5,5 +5,6 @@ class Contest < ApplicationRecord
   validates :signup_duration, presence: true
   validates :duration, presence: true
 
-  has_and_belongs_to_many :owners, through: :contest_ownership
+  has_many :contest_ownerships
+  has_many :owners, through: :contest_ownerships
 end
