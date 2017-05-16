@@ -7,4 +7,6 @@ class Contest < ApplicationRecord
 
   has_many :contest_ownerships
   has_many :owners, through: :contest_ownerships
+
+  has_many :problems
 end

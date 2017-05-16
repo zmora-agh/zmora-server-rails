@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170515135619) do
+ActiveRecord::Schema.define(version: 20170515143422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,21 @@ ActiveRecord::Schema.define(version: 20170515135619) do
     t.datetime "updated_at", null: false
     t.index ["contest_id"], name: "index_contest_ownerships_on_contest_id"
     t.index ["owner_id"], name: "index_contest_ownerships_on_owner_id"
+  end
+
+  create_table "contest_problems", force: :cascade do |t|
+    t.bigint "contest_id"
+    t.bigint "problem_id"
+    t.string "shortcode"
+    t.string "category"
+    t.integer "base_points"
+    t.datetime "soft_deadline"
+    t.datetime "hard_deadline"
+    t.boolean "required"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id"], name: "index_contest_problems_on_contest_id"
+    t.index ["problem_id"], name: "index_contest_problems_on_problem_id"
   end
 
   create_table "contests", force: :cascade do |t|
@@ -61,5 +76,7 @@ ActiveRecord::Schema.define(version: 20170515135619) do
 
   add_foreign_key "contest_ownerships", "contests"
   add_foreign_key "contest_ownerships", "users", column: "owner_id"
+  add_foreign_key "contest_problems", "contests"
+  add_foreign_key "contest_problems", "problems"
   add_foreign_key "problems", "users", column: "author_id"
 end
