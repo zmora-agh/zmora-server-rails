@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516091804) do
+ActiveRecord::Schema.define(version: 20170516092414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,18 @@ ActiveRecord::Schema.define(version: 20170516091804) do
     t.index ["author_id"], name: "index_questions_on_author_id"
   end
 
+  create_table "submit_files", force: :cascade do |t|
+    t.bigint "submit_id"
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.integer "file_file_size"
+    t.datetime "file_updated_at"
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["submit_id"], name: "index_submit_files_on_submit_id"
+  end
+
   create_table "submits", force: :cascade do |t|
     t.bigint "contest_problem_id"
     t.bigint "author_id"
@@ -132,6 +144,7 @@ ActiveRecord::Schema.define(version: 20170516091804) do
   add_foreign_key "problem_examples", "problems"
   add_foreign_key "problems", "users", column: "author_id"
   add_foreign_key "questions", "users", column: "author_id"
+  add_foreign_key "submit_files", "submits"
   add_foreign_key "submits", "contest_problems"
   add_foreign_key "submits", "users", column: "author_id"
   add_foreign_key "test_results", "submits"
