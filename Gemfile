@@ -22,7 +22,13 @@ gem 'puma', '~> 3.7'
 gem 'knock'
 gem 'cancancan'
 gem 'graphql'
+gem 'graphiql-rails'
 gem 'paperclip'
+
+# For graphiql
+gem 'sass-rails'
+gem 'uglifier'
+gem 'coffee-rails'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
