@@ -1,8 +1,8 @@
 class CreateContestProblems < ActiveRecord::Migration[5.1]
   def change
     create_table :contest_problems do |t|
-      t.references :contest, foreign_key: true
-      t.references :problem, foreign_key: true
+      t.references :contest, index: true, foreign_key: true
+      t.references :problem, index: true, foreign_key: true
       t.string :shortcode
       t.string :category
       t.integer :base_points

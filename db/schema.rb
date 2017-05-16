@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516085658) do
+ActiveRecord::Schema.define(version: 20170516091049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answers", force: :cascade do |t|
+    t.bigint "question_id"
+    t.bigint "author_id"
+    t.text "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_answers_on_author_id"
+    t.index ["question_id"], name: "index_answers_on_question_id"
+  end
 
   create_table "contest_ownerships", force: :cascade do |t|
     t.bigint "contest_id"
@@ -70,6 +80,14 @@ ActiveRecord::Schema.define(version: 20170516085658) do
     t.index ["author_id"], name: "index_problems_on_author_id"
   end
 
+  create_table "questions", force: :cascade do |t|
+    t.bigint "author_id"
+    t.text "question"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_questions_on_author_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "nick"
     t.string "password_digest"
@@ -85,10 +103,13 @@ ActiveRecord::Schema.define(version: 20170516085658) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "answers", "questions"
+  add_foreign_key "answers", "users", column: "author_id"
   add_foreign_key "contest_ownerships", "contests"
   add_foreign_key "contest_ownerships", "users", column: "owner_id"
   add_foreign_key "contest_problems", "contests"
   add_foreign_key "contest_problems", "problems"
   add_foreign_key "problem_examples", "problems"
   add_foreign_key "problems", "users", column: "author_id"
+  add_foreign_key "questions", "users", column: "author_id"
 end
