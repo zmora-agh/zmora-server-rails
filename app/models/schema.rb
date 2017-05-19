@@ -5,6 +5,7 @@ UserType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
+  field :about, !types.String
   field :email, !types.String
   field :name, !types.String
   field :nick, !types.String
@@ -16,7 +17,10 @@ SubmitFileType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :checksum, !types.String
-  field :filename, !types.String
+  field :filename do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.file_file_name }
+  end
 end
 
 AnswerType = GraphQL::ObjectType.define do
@@ -25,8 +29,15 @@ AnswerType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :answer, !types.String
-  field :author, !UserType
-  field :answered, !types.String
+  field :author do
+    type !UserType
+    resolve -> (obj, args, ctx) { obj.author }
+  end
+  field :answered do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.created_at }
+
+  end
 end
 
 ExampleType = GraphQL::ObjectType.define do
@@ -45,8 +56,8 @@ TestResultType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
-  field :executionTime, !types.Int
-  field :ramUsage, !types.Int
+  field :execution_time, !types.Int
+  field :ram_usage, !types.Int
   field :status, !types.String
 end
 
@@ -56,10 +67,13 @@ SubmitType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :author, !UserType
-  field :date, !types.String
+  field :date do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.created_at }
+  end
   field :status, !types.String
-  field :submitFiles, types[SubmitFileType]
-  field :testResults, types[TestResultType]
+  field :submit_files, types[SubmitFileType]
+  field :test_results, types[TestResultType]
 end
 
 QuestionType = GraphQL::ObjectType.define do
@@ -68,7 +82,10 @@ QuestionType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :answers, types[AnswerType]
-  field :asked, !types.String
+  field :asked do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.created_at }
+  end
   field :author, !UserType
   field :question, !types.String
 end
@@ -78,17 +95,32 @@ ProblemType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
-  field :basePoints, !types.Int
+  field :base_points, !types.Int
   field :category, !types.String
-  field :examples, types[ExampleType]
-  field :description, !types.String
-  field :hardDeadline, !types.String
-  field :name, !types.String
+  field :examples do
+    type types[ExampleType]
+    resolve -> (obj, args, ctx) { obj.problem.examples }
+  end
+  field :description do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.problem.description }
+  end
+  field :hard_deadline, !types.String
+  field :name do
+    type !types.String
+    resolve -> (obj, args, ctx) { obj.problem.name }
+  end
   field :required, !types.Boolean
   field :shortcode, !types.String
-  field :softDeadline, !types.String
-  field :submits, types[SubmitType]
-  field :questions, types[QuestionType]
+  field :soft_deadline, !types.String
+  field :submits do
+    type types[SubmitType]
+    resolve -> (obj, args, ctx) { obj.submits }
+  end
+  field :questions do
+    type types[QuestionType]
+    resolve -> (obj, args, ctx) { obj.questions }
+  end
 end
 
 ContestType = GraphQL::ObjectType.define do
@@ -98,12 +130,21 @@ ContestType = GraphQL::ObjectType.define do
 
   field :description, !types.String
   field :duration, !types.Int
-  field :joined, !types.Boolean
+  field :joined do
+    type !types.Boolean
+    resolve -> (obj, args, ctx) { true }
+  end
   field :name, !types.String
   field :signupDuration, !types.Int
   field :start, !types.String
-  field :owners, types[UserType]
-  field :problems, types[ProblemType]
+  field :owners do
+    type types[UserType]
+    resolve -> (obj, args, ctx) { obj.owners }
+  end
+  field :problems do
+    type types[ProblemType]
+    resolve -> (obj, args, ctx) { obj.contest_problems }
+  end
 end
 
 QueryType = GraphQL::ObjectType.define do
@@ -118,7 +159,7 @@ QueryType = GraphQL::ObjectType.define do
 
   field :contests do
     type types[ContestType]
-    resolve -> (obj, args, ctx) { Contests.all }
+    resolve -> (obj, args, ctx) { Contest.all }
   end
 end
 

@@ -6,6 +6,7 @@ class CreateContests < ActiveRecord::Migration[5.1]
       t.timestamp :start
       t.integer :signup_duration
       t.integer :duration
+      t.string :description
 
       t.timestamps
     end
