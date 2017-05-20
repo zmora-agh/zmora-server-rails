@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20170516092414) do
     t.datetime "start"
     t.integer "signup_duration"
     t.integer "duration"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -82,10 +83,12 @@ ActiveRecord::Schema.define(version: 20170516092414) do
 
   create_table "questions", force: :cascade do |t|
     t.bigint "author_id"
+    t.bigint "contest_problem_id"
     t.text "question"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_questions_on_author_id"
+    t.index ["contest_problem_id"], name: "index_questions_on_contest_problem_id"
   end
 
   create_table "submit_files", force: :cascade do |t|
@@ -143,6 +146,7 @@ ActiveRecord::Schema.define(version: 20170516092414) do
   add_foreign_key "contest_problems", "problems"
   add_foreign_key "problem_examples", "problems"
   add_foreign_key "problems", "users", column: "author_id"
+  add_foreign_key "questions", "contest_problems"
   add_foreign_key "questions", "users", column: "author_id"
   add_foreign_key "submit_files", "submits"
   add_foreign_key "submits", "contest_problems"

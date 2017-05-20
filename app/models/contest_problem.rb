@@ -1,6 +1,8 @@
 class ContestProblem < ApplicationRecord
   belongs_to :contest
   belongs_to :problem
+  has_many :questions
+  has_many :submits
 
   validates :contest, presence: true
   validates :problem, presence: true
