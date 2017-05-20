@@ -1,4 +1,5 @@
 # coding: utf-8
+
 UserType = GraphQL::ObjectType.define do
   name 'User'
   description 'Zmora user'
@@ -51,7 +52,7 @@ TestResultType = GraphQL::ObjectType.define do
   field :status, !types.String
   field :test do
     type !types.Int
-    resolve -> (obj, args, ctx) { 44 } # some random value
+    resolve ->(_obj, _args, _ctx) { 44 } # some random value
   end
 end
 
@@ -87,16 +88,16 @@ ProblemType = GraphQL::ObjectType.define do
   field :category, !types.String
   field :examples do
     type types[ExampleType]
-    resolve -> (obj, args, ctx) { obj.problem.examples }
+    resolve ->(obj, _args, _ctx) { obj.problem.examples }
   end
   field :description do
     type !types.String
-    resolve -> (obj, args, ctx) { obj.problem.description }
+    resolve ->(obj, _args, _ctx) { obj.problem.description }
   end
   field :hardDeadline, !types.String, property: :hard_deadline
   field :name do
     type !types.String
-    resolve -> (obj, args, ctx) { obj.problem.name }
+    resolve ->(obj, _args, _ctx) { obj.problem.name }
   end
   field :required, !types.Boolean
   field :shortcode, !types.String
@@ -114,7 +115,7 @@ ContestType = GraphQL::ObjectType.define do
   field :duration, !types.Int
   field :joined do
     type !types.Boolean
-    resolve -> (obj, args, ctx) { true }
+    resolve ->(_obj, _args, _ctx) { true }
   end
   field :name, !types.String
   field :signupDuration, !types.Int, property: :signup_duration
@@ -123,42 +124,42 @@ ContestType = GraphQL::ObjectType.define do
   field :problems, types[ProblemType], property: :contest_problems
 end
 
-QueryType = GraphQL::ObjectType.define do
+QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Query'
   description 'The root of all queries'
 
   field :users do
     type types[UserType]
     description 'All users registered to zmora'
-    resolve -> (obj, args, ctx) { User.all }
+    resolve ->(_obj, _args, _ctx) { User.all }
   end
 
   field :contests do
     type types[ContestType]
-    resolve -> (obj, args, ctx) { Contest.all }
+    resolve ->(_obj, _args, _ctx) { Contest.all }
   end
 
   field :contest do
     type ContestType
     argument :id, !types.ID
-    resolve -> (obj, args, ctx) { Contest.find_by_id(args[:id]) }
+    resolve ->(_obj, args, _ctx) { Contest.find_by(id: args[:id]) }
   end
 
   field :problem do
     type ProblemType
     argument :id, !types.ID
-    resolve -> (obj, args, ctx) { ContestProblem.find_by_id(args[:id]) }
+    resolve ->(_obj, args, _ctx) { ContestProblem.find_by(id: args[:id]) }
   end
 
   field :submit do
     type SubmitType
     argument :id, !types.ID
-    resolve -> (obj, args, ctx) { Submit.find_by_id(args[:id]) }
+    resolve ->(_obj, args, _ctx) { Submit.find_by(id: args[:id]) }
   end
 
   field :time do
     type !types.String
-    resolve -> (obj, args, ctx) { Time.now }
+    resolve ->(_obj, _args, _ctx) { Time.current }
   end
 end
 
@@ -181,11 +182,11 @@ MutationType = GraphQL::ObjectType.define do
     argument :password, !types.String
     argument :name, !types.String
     argument :email, !types.String
-    resolve ->(_obj, args, _ctx) {
-      User.register(args[:nick], args[:password], args[:name], args[:email]) }
+    resolve(lambda do |_obj, args, _ctx|
+      User.register(args[:nick], args[:password], args[:name], args[:email])
+    end)
   end
 end
-
 
 Schema = GraphQL::Schema.define do
   query QueryType

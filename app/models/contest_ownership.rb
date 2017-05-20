@@ -1,6 +1,6 @@
 class ContestOwnership < ApplicationRecord
   belongs_to :contest
-  belongs_to :owner, class_name: "User"
+  belongs_to :owner, class_name: 'User'
 
   validates :contest, presence: true
   validates :owner, presence: true, uniqueness: { scope: :contest }
