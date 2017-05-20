@@ -17,10 +17,7 @@ SubmitFileType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :checksum, !types.String
-  field :filename do
-    type !types.String
-    resolve -> (obj, args, ctx) { obj.file_file_name }
-  end
+  field :filename, !types.String, property: :file_file_name
 end
 
 AnswerType = GraphQL::ObjectType.define do
@@ -29,15 +26,8 @@ AnswerType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :answer, !types.String
-  field :author do
-    type !UserType
-    resolve -> (obj, args, ctx) { obj.author }
-  end
-  field :answered do
-    type !types.String
-    resolve -> (obj, args, ctx) { obj.created_at }
-
-  end
+  field :author, !UserType
+  field :answered, !types.String, property: :created_at
 end
 
 ExampleType = GraphQL::ObjectType.define do
@@ -56,9 +46,13 @@ TestResultType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
-  field :execution_time, !types.Int
-  field :ram_usage, !types.Int
+  field :executionTime, !types.Int, property: :execution_time
+  field :ramUsage, !types.Int, property: :ram_usage
   field :status, !types.String
+  field :test do
+    type !types.Int
+    resolve -> (obj, args, ctx) { 44 } # some random value
+  end
 end
 
 SubmitType = GraphQL::ObjectType.define do
@@ -67,13 +61,10 @@ SubmitType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :author, !UserType
-  field :date do
-    type !types.String
-    resolve -> (obj, args, ctx) { obj.created_at }
-  end
+  field :date, !types.String, property: :created_at
   field :status, !types.String
-  field :submit_files, types[SubmitFileType]
-  field :test_results, types[TestResultType]
+  field :submitFiles, types[SubmitFileType], property: :submit_files
+  field :testResults, types[TestResultType], property: :test_results
 end
 
 QuestionType = GraphQL::ObjectType.define do
@@ -82,10 +73,7 @@ QuestionType = GraphQL::ObjectType.define do
   field :id, !types.ID
 
   field :answers, types[AnswerType]
-  field :asked do
-    type !types.String
-    resolve -> (obj, args, ctx) { obj.created_at }
-  end
+  field :asked, !types.String, property: :created_at
   field :author, !UserType
   field :question, !types.String
 end
@@ -95,7 +83,7 @@ ProblemType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
-  field :base_points, !types.Int
+  field :basePoints, !types.Int, property: :base_points
   field :category, !types.String
   field :examples do
     type types[ExampleType]
@@ -105,22 +93,16 @@ ProblemType = GraphQL::ObjectType.define do
     type !types.String
     resolve -> (obj, args, ctx) { obj.problem.description }
   end
-  field :hard_deadline, !types.String
+  field :hardDeadline, !types.String, property: :hard_deadline
   field :name do
     type !types.String
     resolve -> (obj, args, ctx) { obj.problem.name }
   end
   field :required, !types.Boolean
   field :shortcode, !types.String
-  field :soft_deadline, !types.String
-  field :submits do
-    type types[SubmitType]
-    resolve -> (obj, args, ctx) { obj.submits }
-  end
-  field :questions do
-    type types[QuestionType]
-    resolve -> (obj, args, ctx) { obj.questions }
-  end
+  field :softDeadline, !types.String, property: :soft_deadline
+  field :submits, types[SubmitType]
+  field :questions, types[QuestionType]
 end
 
 ContestType = GraphQL::ObjectType.define do
@@ -135,16 +117,10 @@ ContestType = GraphQL::ObjectType.define do
     resolve -> (obj, args, ctx) { true }
   end
   field :name, !types.String
-  field :signupDuration, !types.Int
+  field :signupDuration, !types.Int, property: :signup_duration
   field :start, !types.String
-  field :owners do
-    type types[UserType]
-    resolve -> (obj, args, ctx) { obj.owners }
-  end
-  field :problems do
-    type types[ProblemType]
-    resolve -> (obj, args, ctx) { obj.contest_problems }
-  end
+  field :owners, types[UserType]
+  field :problems, types[ProblemType], property: :contest_problems
 end
 
 QueryType = GraphQL::ObjectType.define do
@@ -160,6 +136,29 @@ QueryType = GraphQL::ObjectType.define do
   field :contests do
     type types[ContestType]
     resolve -> (obj, args, ctx) { Contest.all }
+  end
+
+  field :contest do
+    type ContestType
+    argument :id, !types.ID
+    resolve -> (obj, args, ctx) { Contest.find_by_id(args[:id]) }
+  end
+
+  field :problem do
+    type ProblemType
+    argument :id, !types.ID
+    resolve -> (obj, args, ctx) { ContestProblem.find_by_id(args[:id]) }
+  end
+
+  field :submit do
+    type SubmitType
+    argument :id, !types.ID
+    resolve -> (obj, args, ctx) { Submit.find_by_id(args[:id]) }
+  end
+
+  field :time do
+    type !types.String
+    resolve -> (obj, args, ctx) { Time.now }
   end
 end
 
