@@ -1,0 +1,10 @@
+AllCops:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+
+Rails:
+  Enabled: true
+
+Bundler/OrderedGems:
+  Enabled: false
