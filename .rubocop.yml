@@ -8,3 +8,12 @@ Rails:
 
 Bundler/OrderedGems:
   Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
