@@ -1,8 +1,12 @@
 # coding: utf-8
 
+GraphQL::Field.accepts_definitions permit: GraphQL::Define.assign_metadata_key(:permit)
+GraphQL::ObjectType.accepts_definitions permit: GraphQL::Define.assign_metadata_key(:permit)
+
 UserType = GraphQL::ObjectType.define do
   name 'User'
   description 'Zmora user'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -14,6 +18,7 @@ end
 
 SubmitFileType = GraphQL::ObjectType.define do
   name 'SubmitFile'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -23,6 +28,7 @@ end
 
 AnswerType = GraphQL::ObjectType.define do
   name 'Answer'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -33,6 +39,7 @@ end
 
 ExampleType = GraphQL::ObjectType.define do
   name 'Example'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -44,6 +51,7 @@ end
 
 TestResultType = GraphQL::ObjectType.define do
   name 'TestResult'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -58,6 +66,7 @@ end
 
 SubmitType = GraphQL::ObjectType.define do
   name 'Submit'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -70,6 +79,7 @@ end
 
 QuestionType = GraphQL::ObjectType.define do
   name 'Question'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -81,9 +91,9 @@ end
 
 ProblemType = GraphQL::ObjectType.define do
   name 'Problem'
+  permit :logged_in
 
   field :id, !types.ID
-
   field :basePoints, !types.Int, property: :base_points
   field :category, !types.String
   field :examples do
@@ -102,12 +112,15 @@ ProblemType = GraphQL::ObjectType.define do
   field :required, !types.Boolean
   field :shortcode, !types.String
   field :softDeadline, !types.String, property: :soft_deadline
-  field :submits, types[SubmitType]
+  field :submits, types[SubmitType] do
+    resolve ->(obj, _args, ctx) { obj.submits.where(author_id: ctx['id']) }
+  end
   field :questions, types[QuestionType]
 end
 
 ContestType = GraphQL::ObjectType.define do
   name 'Contest'
+  permit :logged_in
 
   field :id, !types.ID
 
@@ -121,12 +134,17 @@ ContestType = GraphQL::ObjectType.define do
   field :signupDuration, !types.Int, property: :signup_duration
   field :start, !types.String
   field :owners, types[UserType]
-  field :problems, types[ProblemType], property: :contest_problems
+  field :problems do
+    type types[ProblemType]
+    resolve ->(obj, _args, _ctx) { obj.start + obj.signup_duration < Time.current ? obj.contest_problems : [] }
+    # TODO: add check if joined
+  end
 end
 
 QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Query'
   description 'The root of all queries'
+  permit :everyone
 
   field :users do
     type types[UserType]
@@ -148,17 +166,21 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   field :problem do
     type ProblemType
     argument :id, !types.ID
-    resolve ->(_obj, args, _ctx) { ContestProblem.find_by(id: args[:id]) }
+    resolve(lambda do |_obj, args, _ctx|
+      problem = ContestProblem.find_by(id: args[:id])
+      problem if problem.contest.start + problem.contest.signup_duration < Time.current
+    end)
   end
 
   field :submit do
     type SubmitType
     argument :id, !types.ID
-    resolve ->(_obj, args, _ctx) { Submit.find_by(id: args[:id]) }
+    resolve ->(_obj, args, ctx) { Submit.find_by(id: args[:id], author_id: ctx['id']) }
   end
 
   field :time do
     type !types.String
+    permit :everyone
     resolve ->(_obj, _args, _ctx) { Time.current }
   end
 end
@@ -166,6 +188,7 @@ end
 MutationType = GraphQL::ObjectType.define do
   name 'Mutation'
   description 'The root of all mutations'
+  permit :everyone
 
   field :getJwtToken do
     type types.String
@@ -191,4 +214,5 @@ end
 Schema = GraphQL::Schema.define do
   query QueryType
   mutation MutationType
+  middleware AuthorizationMiddleware.new
 end
