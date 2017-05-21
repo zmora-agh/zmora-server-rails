@@ -35,4 +35,12 @@ class User < ApplicationRecord
     contest = ContestProblem.find(problem_id).contest
     ContestParticipation.exists?(contest: contest, user_id: user_id) && contest.in_progress?
   end
+
+  def self.change_password(id, old_password, new_password)
+    user = User.find(id)
+    return false unless user
+    return false unless user.authenticate(old_password)
+    user.password = new_password
+    user.save
+  end
 end

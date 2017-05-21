@@ -205,22 +205,29 @@ MutationType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLeng
     argument :password, !types.String
     argument :name, !types.String
     argument :email, !types.String
-    resolve(lambda do |_obj, args, _ctx|
-      User.register(args[:nick], args[:password], args[:name], args[:email])
-    end)
+    resolve ->(_obj, args, _ctx) { User.register(args[:nick], args[:password], args[:name], args[:email]) }
   end
 
   field :joinContest, ContestType do
     permit :logged_in
+    description 'Joins a contest'
     argument :id, !types.ID
     argument :password, !types.String
     resolve(lambda do |_obj, args, ctx|
       begin
         Contest.join(ctx['id'], args[:id], args[:password]) ? Contest.find_by(id: args[:id]) : nil
       rescue ArgumentError
-        return GraphQL::ExecutionError.new('User is already participating in the contest')
+        return ZmoraGraphqlError.new(400, 'User is already participating in the contest')
       end
     end)
+  end
+
+  field :changePassword, !types.Boolean do
+    permit :logged_in
+    description 'Changes logged user password'
+    argument :oldPassword, !types.String
+    argument :newPassword, !types.String
+    resolve ->(_obj, args, ctx) { User.change_password(ctx['id'], args[:oldPassword], args[:newPassword]) }
   end
 end
 
