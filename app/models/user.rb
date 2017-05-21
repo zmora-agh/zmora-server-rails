@@ -30,4 +30,9 @@ class User < ApplicationRecord
     payload = { nick: user.nick, name: user.name, id: user.id, admin: true }
     JsonWebTokens.encode(payload)
   end
+
+  def self.can_submit_to?(user_id, problem_id)
+    contest = ContestProblem.find(problem_id).contest
+    ContestParticipation.exists?(contest: contest, user_id: user_id) && contest.in_progress?
+  end
 end

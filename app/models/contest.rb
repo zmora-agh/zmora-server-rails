@@ -12,6 +12,10 @@ class Contest < ApplicationRecord
 
   has_many :contest_problems
 
+  def in_progress?
+    start + signup_duration < Time.current && start + signup_duration + duration > Time.current
+  end
+
   def self.join(user_id, contest_id, password)
     ownership = ContestOwnership.find_by(contest_id: contest_id, join_password: password)
     return nil unless ownership

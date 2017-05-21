@@ -22,7 +22,7 @@ SubmitFileType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
 
-  field :checksum, !types.String
+  field :checksum, !types.String, property: :file_fingerprint
   field :filename, !types.String, property: :file_file_name
 end
 
