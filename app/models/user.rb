@@ -6,7 +6,9 @@ class User < ApplicationRecord
   has_many :problems, foreign_key: 'author_id'
 
   has_many :contest_ownerships, foreign_key: 'owner_id'
-  has_many :contests, through: :contest_ownerships
+  has_many :owned_contests, class_name: 'Contest', through: :contest_ownerships
+  has_many :contest_participations
+  has_many :joined_contests, class_name: 'Contest', through: :contest_participations
 
   validates :nick,  presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true, uniqueness: { case_sensitive: false }

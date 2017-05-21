@@ -128,7 +128,7 @@ ContestType = GraphQL::ObjectType.define do
   field :duration, !types.Int
   field :joined do
     type !types.Boolean
-    resolve ->(_obj, _args, _ctx) { true }
+    resolve ->(obj, _args, ctx) { ContestParticipation.exists?(contest_id: obj.id, user_id: ctx['id']) }
   end
   field :name, !types.String
   field :signupDuration, !types.Int, property: :signup_duration
@@ -185,7 +185,7 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   end
 end
 
-MutationType = GraphQL::ObjectType.define do
+MutationType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Mutation'
   description 'The root of all mutations'
   permit :everyone
@@ -207,6 +207,19 @@ MutationType = GraphQL::ObjectType.define do
     argument :email, !types.String
     resolve(lambda do |_obj, args, _ctx|
       User.register(args[:nick], args[:password], args[:name], args[:email])
+    end)
+  end
+
+  field :joinContest, ContestType do
+    permit :logged_in
+    argument :id, !types.ID
+    argument :password, !types.String
+    resolve(lambda do |_obj, args, ctx|
+      begin
+        Contest.join(ctx['id'], args[:id], args[:password]) ? Contest.find_by(id: args[:id]) : nil
+      rescue ArgumentError
+        return GraphQL::ExecutionError.new('User is already participating in the contest')
+      end
     end)
   end
 end

@@ -7,6 +7,20 @@ class Contest < ApplicationRecord
 
   has_many :contest_ownerships
   has_many :owners, through: :contest_ownerships
+  has_many :contest_participations
+  has_many :users, through: :contest_participations
 
   has_many :contest_problems
+
+  def self.join(user_id, contest_id, password)
+    ownership = ContestOwnership.find_by(contest_id: contest_id, join_password: password)
+    return nil unless ownership
+    participation = ContestParticipation.new(
+      contest_id: contest_id,
+      user_id: user_id,
+      contest_owner_id: ownership.owner.id
+    )
+    raise ArgumentError if participation.invalid? && participation.errors[:contest_id].any?
+    participation.save
+  end
 end
