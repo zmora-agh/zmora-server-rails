@@ -10,5 +10,6 @@ RSpec.describe User, type: :model do
 
   it { should have_many(:problems) }
   it { should have_many(:contest_ownerships) }
-  it { should have_many(:contests) }
+  it { should have_many(:owned_contests) }
+  it { should have_many(:joined_contests) }
 end
