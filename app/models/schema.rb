@@ -163,6 +163,32 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   end
 end
 
+MutationType = GraphQL::ObjectType.define do
+  name 'Mutation'
+  description 'The root of all mutations'
+
+  field :getJwtToken do
+    type types.String
+    description 'Returns JWT token for user'
+    argument :nick, !types.String
+    argument :password, !types.String
+    resolve ->(_obj, args, _ctx) { User.login(args[:nick], args[:password]) }
+  end
+
+  field :register do
+    type types.String
+    description 'Registers new user'
+    argument :nick, !types.String
+    argument :password, !types.String
+    argument :name, !types.String
+    argument :email, !types.String
+    resolve(lambda do |_obj, args, _ctx|
+      User.register(args[:nick], args[:password], args[:name], args[:email])
+    end)
+  end
+end
+
 Schema = GraphQL::Schema.define do
   query QueryType
+  mutation MutationType
 end
