@@ -159,13 +159,13 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
 
   field :contest do
     type ContestType
-    argument :id, !types.ID
+    argument :id, !types.Int
     resolve ->(_obj, args, _ctx) { Contest.find_by(id: args[:id]) }
   end
 
   field :problem do
     type ProblemType
-    argument :id, !types.ID
+    argument :id, !types.Int
     resolve(lambda do |_obj, args, _ctx|
       problem = ContestProblem.find_by(id: args[:id])
       problem if problem.contest.start + problem.contest.signup_duration < Time.current
@@ -174,7 +174,7 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
 
   field :submit do
     type SubmitType
-    argument :id, !types.ID
+    argument :id, !types.Int
     resolve ->(_obj, args, ctx) { Submit.find_by(id: args[:id], author_id: ctx['id']) }
   end
 
@@ -211,7 +211,7 @@ MutationType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLeng
   field :joinContest, ContestType do
     permit :logged_in
     description 'Joins a contest'
-    argument :id, !types.ID
+    argument :id, !types.Int
     argument :password, !types.String
     resolve(lambda do |_obj, args, ctx|
       begin
