@@ -8,7 +8,7 @@ UserType = GraphQL::ObjectType.define do
   description 'Zmora user'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :about, !types.String
   field :email, !types.String
@@ -20,7 +20,7 @@ SubmitFileType = GraphQL::ObjectType.define do
   name 'SubmitFile'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :checksum, !types.String, property: :file_fingerprint
   field :filename, !types.String, property: :file_file_name
@@ -30,7 +30,7 @@ AnswerType = GraphQL::ObjectType.define do
   name 'Answer'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :answer, !types.String
   field :author, !UserType
@@ -41,7 +41,7 @@ ExampleType = GraphQL::ObjectType.define do
   name 'Example'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :explanation, !types.String
   field :input, !types.String
@@ -53,7 +53,7 @@ TestResultType = GraphQL::ObjectType.define do
   name 'TestResult'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :executionTime, !types.Int, property: :execution_time
   field :ramUsage, !types.Int, property: :ram_usage
@@ -68,7 +68,7 @@ SubmitType = GraphQL::ObjectType.define do
   name 'Submit'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :author, !UserType
   field :date, !types.String, property: :created_at
@@ -81,7 +81,7 @@ QuestionType = GraphQL::ObjectType.define do
   name 'Question'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :answers, types[AnswerType]
   field :asked, !types.String, property: :created_at
@@ -93,7 +93,7 @@ ProblemType = GraphQL::ObjectType.define do
   name 'Problem'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
   field :basePoints, !types.Int, property: :base_points
   field :category, !types.String
   field :examples do
@@ -122,7 +122,7 @@ ContestType = GraphQL::ObjectType.define do
   name 'Contest'
   permit :logged_in
 
-  field :id, !types.ID
+  field :id, !types.Int
 
   field :description, !types.String
   field :duration, !types.Int
