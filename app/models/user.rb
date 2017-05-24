@@ -36,6 +36,10 @@ class User < ApplicationRecord
     ContestParticipation.exists?(contest: contest, user_id: user_id) && contest.in_progress?
   end
 
+  def self.owner_of?(user_id, contest_id)
+    Contest.find(contest_id).owners.where(id: user_id).exists?
+  end
+
   def self.change_password(id, old_password, new_password)
     user = User.find(id)
     return false unless user
