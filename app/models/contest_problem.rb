@@ -11,4 +11,12 @@ class ContestProblem < ApplicationRecord
   validates :base_points, presence: true
   validates :soft_deadline, presence: true
   validates :required, presence: true
+
+  def results(owner_id)
+    results = []
+    contest.contest_participations.where(contest_owner_id: owner_id).find_each do |participation|
+      results.push(submits.order(status: :desc, created_at: :desc).find_by(author: participation.user))
+    end
+    results
+  end
 end

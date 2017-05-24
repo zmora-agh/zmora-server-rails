@@ -89,7 +89,7 @@ QuestionType = GraphQL::ObjectType.define do
   field :question, !types.String
 end
 
-ProblemType = GraphQL::ObjectType.define do
+ProblemType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Problem'
   permit :logged_in
 
@@ -116,6 +116,10 @@ ProblemType = GraphQL::ObjectType.define do
     resolve ->(obj, _args, ctx) { obj.submits.where(author_id: ctx['id']) }
   end
   field :questions, types[QuestionType]
+  field :results, types[SubmitType] do
+    description 'Agregates all submits in problem and shows best for each user'
+    resolve ->(obj, _args, ctx) { obj.results(ctx['id']) if User.owner_of?(ctx['id'], obj.contest.id) }
+  end
 end
 
 ContestType = GraphQL::ObjectType.define do
