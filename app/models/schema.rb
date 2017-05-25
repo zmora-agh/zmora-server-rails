@@ -140,8 +140,12 @@ ContestType = GraphQL::ObjectType.define do
   field :owners, types[UserType]
   field :problems do
     type types[ProblemType]
-    resolve ->(obj, _args, _ctx) { obj.start + obj.signup_duration < Time.current ? obj.contest_problems : [] }
-    # TODO: add check if joined
+    resolve(lambda do |obj, _args, ctx|
+      result = obj.contest_problems
+      return result if User.owner_of?(ctx['id'], obj.id)
+      return result if obj.started? && obj.user_participates?(ctx['id'])
+      []
+    end)
   end
 end
 
