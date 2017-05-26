@@ -13,7 +13,15 @@ class Contest < ApplicationRecord
   has_many :contest_problems
 
   def in_progress?
-    start + signup_duration < Time.current && start + signup_duration + duration > Time.current
+    started? && start + signup_duration + duration > Time.current
+  end
+
+  def started?
+    start + signup_duration < Time.current
+  end
+
+  def user_participates?(user_id)
+    users.exists?(id: user_id)
   end
 
   def self.join(user_id, contest_id, password)
