@@ -113,7 +113,12 @@ ProblemType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
   field :shortcode, !types.String
   field :softDeadline, !types.String, property: :soft_deadline
   field :submits, types[SubmitType] do
-    resolve ->(obj, _args, ctx) { obj.submits.where(author_id: ctx['id']) }
+    argument :user_id, types.Int
+    resolve(lambda do |obj, args, ctx|
+      id = args[:user_id] ? args[:user_id] : ctx['id']
+      return [] unless User.can_view_user_submits_in_problem?(ctx['id'], id, obj)
+      obj.submits.where(author_id: id)
+    end)
   end
   field :questions, types[QuestionType]
   field :results, types[SubmitType] do

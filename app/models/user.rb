@@ -47,4 +47,9 @@ class User < ApplicationRecord
     user.password = new_password
     user.save
   end
+
+  def self.can_view_user_submits_in_problem?(viewer_id, author_id, problem)
+    problem.contest.contest_participations.exists?(user_id: author_id, contest_owner: viewer_id) ||
+      viewer_id == author_id
+  end
 end
