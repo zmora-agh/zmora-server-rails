@@ -15,7 +15,8 @@ class ContestProblem < ApplicationRecord
   def results(owner_id)
     results = []
     contest.contest_participations.where(contest_owner_id: owner_id).find_each do |participation|
-      results.push(submits.order(status: :desc, created_at: :desc).find_by(author: participation.user))
+      submit = submits.order(status: :desc, created_at: :desc).find_by(author: participation.user)
+      results.push(submit) if submit
     end
     results
   end
