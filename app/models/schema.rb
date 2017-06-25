@@ -127,7 +127,23 @@ ProblemType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
   end
 end
 
-ContestType = GraphQL::ObjectType.define do
+ProblemSolutionType = GraphQL::ObjectType.define do
+  name 'ProblemSolution'
+  permit :logged_in
+
+  field :problem, !ProblemType, hash_key: :problem
+  field :attempts, !types.Int, hash_key: :attempts
+end
+
+ContestAttemptType = GraphQL::ObjectType.define do
+  name 'ContestRanking'
+  permit :logged_in
+
+  field :user, !UserType, hash_key: :user
+  field :solutions, !types[ProblemSolutionType], hash_key: :solutions
+end
+
+ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Contest'
   permit :logged_in
 
@@ -143,6 +159,12 @@ ContestType = GraphQL::ObjectType.define do
   field :signupDuration, !types.Int, property: :signup_duration
   field :start, !types.String
   field :owners, types[UserType]
+  field :ranking do
+    type !types[ContestAttemptType]
+    resolve(lambda do |obj, _args, ctx|
+      Submit.contest_solutions(obj.id, ctx['id'])
+    end)
+  end
   field :problems do
     type types[ProblemType]
     resolve(lambda do |obj, _args, ctx|
