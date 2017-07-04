@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170605172329) do
+ActiveRecord::Schema.define(version: 20170703144822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,9 @@ ActiveRecord::Schema.define(version: 20170605172329) do
     t.integer "ram_usage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "test_id"
     t.index ["submit_id"], name: "index_test_results_on_submit_id"
+    t.index ["test_id"], name: "index_test_results_on_test_id"
   end
 
   create_table "tests", force: :cascade do |t|
@@ -178,5 +180,6 @@ ActiveRecord::Schema.define(version: 20170605172329) do
   add_foreign_key "submits", "contest_problems"
   add_foreign_key "submits", "users", column: "author_id"
   add_foreign_key "test_results", "submits"
+  add_foreign_key "test_results", "tests"
   add_foreign_key "tests", "contest_problems"
 end

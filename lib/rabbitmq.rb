@@ -12,6 +12,12 @@ class RabbitMQ
     @ch.default_exchange.publish(message, routing_key: @que.name)
   end
 
+  def start_receiving
+    @que.subscribe do |_delivery_info, _metadata, payload|
+      yield payload
+    end
+  end
+
   def close
     @con.close
   end
