@@ -80,4 +80,8 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.rabbitmq_uri = 'amqp://localhost'
+  config.tasks_queue_name = 'tasks'
+  config.tasks_results_queue_name = 'tasksResults'
 end
