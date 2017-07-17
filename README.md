@@ -9,6 +9,8 @@ Things you may want to cover:
 
 * System dependencies
 
+``` sudo apt-get install libpq-dev rabbitmq-server```
+
 * Configuration
 
 * Database creation
