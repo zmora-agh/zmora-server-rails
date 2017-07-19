@@ -39,7 +39,7 @@ class Submit < ApplicationRecord
   end
 
   def in_contest_owned_by?(contest_owner_id)
-    Submit.joins(contest_problem: { contest: :contest_ownerships })
-          .exists?(id: id, contest_ownerships: { owner_id: contest_owner_id })
+    Submit.joins(contest_problem: { contest: :contest_participations })
+          .exists?(id: id, contest_participations: { user_id: author.id, contest_owner_id: contest_owner_id })
   end
 end
