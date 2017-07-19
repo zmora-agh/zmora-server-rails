@@ -212,7 +212,10 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   field :submit do
     type SubmitType
     argument :id, !types.Int
-    resolve ->(_obj, args, ctx) { Submit.find_by(id: args[:id], author_id: ctx['id']) }
+    resolve(lambda do |_obj, args, ctx|
+      submit = Submit.find_by(id: args[:id])
+      submit if submit && submit.author?(ctx['id']) || submit.in_contest_owned_by?(ctx['id'])
+    end)
   end
 
   field :time do
