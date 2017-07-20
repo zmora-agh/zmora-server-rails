@@ -33,4 +33,13 @@ class Submit < ApplicationRecord
 
     attempts.map { |user, solution| { user: user, solutions: solution.map { |s| { problem: s[0], attempts: s[1] } } } }
   end
+
+  def author?(user_id)
+    author.id == user_id
+  end
+
+  def in_contest_owned_by?(contest_owner_id)
+    Submit.joins(contest_problem: { contest: :contest_participations })
+          .exists?(id: id, contest_participations: { user_id: author.id, contest_owner_id: contest_owner_id })
+  end
 end
