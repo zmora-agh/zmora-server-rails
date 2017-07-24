@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it {should validate_presence_of(:nick)}
-  it {should validate_presence_of(:email)}
-  it {should validate_presence_of(:name)}
+  it {is_expected.to validate_presence_of(:nick)}
+  it {is_expected.to validate_presence_of(:email)}
+  it {is_expected.to validate_presence_of(:name)}
 
-  it {should validate_uniqueness_of(:nick).ignoring_case_sensitivity}
-  it {should validate_uniqueness_of(:email).ignoring_case_sensitivity}
+  it {is_expected.to validate_uniqueness_of(:nick).ignoring_case_sensitivity}
+  it {is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity}
 
-  it {should have_many(:problems)}
-  it {should have_many(:contest_ownerships)}
-  it {should have_many(:owned_contests)}
-  it {should have_many(:joined_contests)}
+  it {is_expected.to have_many(:problems)}
+  it {is_expected.to have_many(:contest_ownerships)}
+  it {is_expected.to have_many(:owned_contests)}
+  it {is_expected.to have_many(:joined_contests)}
 
   it "can't register 2 users with the same nick" do
     user_register_result_1 = User.register('oszust', 'password', 'kamil', 'email')
@@ -20,22 +20,20 @@ RSpec.describe User, type: :model do
     expect(user_register_result_2).to be_nil
   end
 
-  context 'User' do
-    Steps 'password changing' do
-      Given 'user with old password' do
-        @old_password = 'oldPass'
-        @new_password = 'newPass'
-        @user = create(:user, password: @old_password)
-      end
+  describe '.change_password' do
+    let(:old_password) {'oldPass'}
+    let(:new_password) {'newPass'}
+    let(:user) {create(:user, password: old_password)}
 
-      When 'user changes to new password' do
-        User.change_password(@user.id, @old_password, @new_password)
-      end
+    before do
+      User.change_password(user.id, old_password, new_password)
+    end
 
-      Then 'old password should be invalid after changing' do
-        expect(User.login(@user.nick, @old_password)).to be_nil
-        expect(User.login(@user.nick, @new_password)).not_to be_nil
-      end
+    it "old password invalid " do
+      expect(User.login(user.nick, old_password)).to be_nil
+    end
+    it " new password valid" do
+      expect(User.login(user.nick, new_password)).not_to be_nil
     end
   end
 end
