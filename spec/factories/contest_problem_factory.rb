@@ -1,6 +1,6 @@
 require 'rails_helper'
 FactoryGirl.define do
-  factory :contestProblem do
+  factory :contest_problem do
     contest
     problem
     category 'cat'
