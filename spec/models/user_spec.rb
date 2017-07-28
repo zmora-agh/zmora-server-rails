@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.change_password' do
+  describe '.change_password .login' do
     let(:old_password) {'oldPass'}
     let(:new_password) {'newPass'}
     let(:user) {create(:user, password: old_password)}
@@ -52,7 +52,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe `.can_view_user_submits_in_problem?` do
+  describe '.can_view_user_submits_in_problem?' do
     let(:contest_problem) {create(:contest_problem)}
     let(:contest_participations) {create(:contest_participation, contest: contest_problem.contest)}
 
@@ -64,6 +64,19 @@ RSpec.describe User, type: :model do
       ).to be true
       #todo participant can view
       #todo random user can't view
+    end
+  end
+
+  describe '.can_submit_to?' do
+    let(:contest_problem) {create(:contest_problem)}
+    let(:contest_participations) {create(:contest_participation, contest: contest_problem.contest)}
+
+    it 'participant can submit to problem when contest is in progress' do
+      participant = contest_participations.user.id
+      expect(
+          User.can_submit_to?(participant, contest_problem.id)
+      ).to be true
+# todo can't submit  when not in progress
     end
   end
 end
