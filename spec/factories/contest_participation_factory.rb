@@ -7,7 +7,8 @@ FactoryGirl.define do
     association :contest_owner, factory: :user
 
     after(:create) do |contest_participation, _|
-      create(:contest_ownership, owner: contest_participation.user, contest: contest_participation.contest)
+      create(:contest_ownership, owner: contest_participation.contest_owner,
+             contest: contest_participation.contest)
     end
   end
 end
