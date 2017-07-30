@@ -169,8 +169,7 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
     type types[ProblemType]
     resolve(lambda do |obj, _args, ctx|
       result = obj.contest_problems
-      return result if User.owner_of?(ctx['id'], obj.id)
-      return result if obj.started? && obj.user_participates?(ctx['id'])
+      return result if User.can_access_contest_problems?(ctx['id'], obj)
       []
     end)
   end
@@ -203,9 +202,9 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   field :problem do
     type ProblemType
     argument :id, !types.Int
-    resolve(lambda do |_obj, args, _ctx|
+    resolve(lambda do |_obj, args, ctx|
       problem = ContestProblem.find_by(id: args[:id])
-      problem if problem.contest.start + problem.contest.signup_duration < Time.current
+      problem if User.can_access_contest_problems?(ctx['id'], problem.contest)
     end)
   end
 
