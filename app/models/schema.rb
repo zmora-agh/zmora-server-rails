@@ -21,6 +21,10 @@ SubmitFileType = GraphQL::ObjectType.define do
   permit :logged_in
 
   field :id, !types.Int
+  field :url do
+    type !types.String
+    resolve ->(obj, _args, _ctx) { obj.file.url }
+  end
 
   field :checksum, !types.String, property: :file_fingerprint
   field :filename, !types.String, property: :file_file_name
