@@ -4,6 +4,9 @@ AllCops:
     - 'config/**/*'
     - 'lib/*_pb.rb'
 
+Metrics/BlockLength:
+  ExcludedMethods: ['describe']
+
 Rails:
   Enabled: true
 
