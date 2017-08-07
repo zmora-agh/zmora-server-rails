@@ -7,7 +7,7 @@ FactoryGirl.define do
     end
 
     name 'contest name'
-    start {1.day.ago}
+    start { 1.day.ago }
     shortcode
     # contest is started (1.day.ago + 12 h < Time.current)
     signup_duration 3600 * 12

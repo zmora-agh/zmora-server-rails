@@ -1,20 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it {is_expected.to validate_presence_of(:nick)}
-  it {is_expected.to validate_presence_of(:email)}
-  it {is_expected.to validate_presence_of(:name)}
+  it { is_expected.to validate_presence_of(:nick) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_presence_of(:name) }
 
-  it {is_expected.to validate_uniqueness_of(:nick).ignoring_case_sensitivity}
-  it {is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity}
+  it { is_expected.to validate_uniqueness_of(:nick).ignoring_case_sensitivity }
+  it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
 
-  it {is_expected.to have_many(:problems)}
-  it {is_expected.to have_many(:contest_ownerships)}
-  it {is_expected.to have_many(:owned_contests)}
-  it {is_expected.to have_many(:joined_contests)}
+  it { is_expected.to have_many(:problems) }
+  it { is_expected.to have_many(:contest_ownerships) }
+  it { is_expected.to have_many(:owned_contests) }
+  it { is_expected.to have_many(:joined_contests) }
 
   describe '.register' do
-    let(:attrs) {attributes_for(:user)}
+    let(:attrs) { attributes_for(:user) }
     it "can't register 2 users with the same nick/email" do
       expect(User.register(*attrs)).not_to be_nil
       expect(User.register(*attrs)).to be_nil
@@ -22,9 +22,9 @@ RSpec.describe User, type: :model do
   end
 
   describe '.change_password .login' do
-    let(:old_password) {'oldPass'}
-    let(:new_password) {'newPass'}
-    let(:user) {create(:user, password: old_password)}
+    let(:old_password) { 'oldPass' }
+    let(:new_password) { 'newPass' }
+    let(:user) { create(:user, password: old_password) }
 
     before do
       User.change_password(user.id, old_password, new_password)
@@ -40,8 +40,8 @@ RSpec.describe User, type: :model do
   end
 
   describe '.owner_of?' do
-    let(:user) {create(:user)}
-    let(:contest) {create(:contest)}
+    let(:user) { create(:user) }
+    let(:contest) { create(:contest) }
 
     before do
       create(:contest_ownership, owner: user, contest: contest)
@@ -53,30 +53,30 @@ RSpec.describe User, type: :model do
   end
 
   describe '.can_view_user_submits_in_problem?' do
-    let(:contest_problem) {create(:contest_problem)}
-    let(:contest_participations) {create(:contest_participation, contest: contest_problem.contest)}
+    let(:contest_problem) { create(:contest_problem) }
+    let(:contest_participations) { create(:contest_participation, contest: contest_problem.contest) }
 
     it 'contest owner can view participants results' do
       owner = contest_participations.contest_owner.id
       participant = contest_participations.user.id
       expect(
-          User.can_view_user_submits_in_problem?(owner, participant, contest_problem)
+        User.can_view_user_submits_in_problem?(owner, participant, contest_problem)
       ).to be true
-      #todo participant can view
-      #todo random user can't view
+      # TODO: participant can view
+      # todo random user can't view
     end
   end
 
   describe '.can_submit_to?' do
-    let(:contest_problem) {create(:contest_problem)}
-    let(:contest_participations) {create(:contest_participation, contest: contest_problem.contest)}
+    let(:contest_problem) { create(:contest_problem) }
+    let(:contest_participations) { create(:contest_participation, contest: contest_problem.contest) }
 
     it 'participant can submit to problem when contest is in progress' do
       participant = contest_participations.user.id
       expect(
-          User.can_submit_to?(participant, contest_problem.id)
+        User.can_submit_to?(participant, contest_problem.id)
       ).to be true
-# todo can't submit  when not in progress
+      # TODO: can't submit  when not in progress
     end
   end
 end

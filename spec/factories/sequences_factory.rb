@@ -14,5 +14,4 @@ FactoryGirl.define do
   sequence :join_password do |n|
     "pass#{n}"
   end
-
 end

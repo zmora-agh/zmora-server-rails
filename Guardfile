@@ -28,8 +28,6 @@ guard :rspec, cmd: 'bundle exec rspec -fd' do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
 
-  # Feel free to open issues for suggestions and improvements
-
   # RSpec files
   rspec = dsl.rspec
   watch(rspec.spec_helper) { rspec.spec_dir }
@@ -46,11 +44,9 @@ guard :rspec, cmd: 'bundle exec rspec -fd' do
   dsl.watch_spec_files_for(rails.views)
 
   watch(rails.controllers) do |m|
-    [
-      rspec.spec.call("routing/#{m[1]}_routing"),
-      rspec.spec.call("controllers/#{m[1]}_controller"),
-      rspec.spec.call("acceptance/#{m[1]}")
-    ]
+    [rspec.spec.call("routing/#{m[1]}_routing"),
+     rspec.spec.call("controllers/#{m[1]}_controller"),
+     rspec.spec.call("acceptance/#{m[1]}")]
   end
 
   # watch factories

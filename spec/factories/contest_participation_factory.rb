@@ -8,7 +8,7 @@ FactoryGirl.define do
 
     after(:create) do |contest_participation, _|
       create(:contest_ownership, owner: contest_participation.contest_owner,
-             contest: contest_participation.contest)
+                                 contest: contest_participation.contest)
     end
   end
 end

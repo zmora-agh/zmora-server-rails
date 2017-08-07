@@ -1,7 +1,7 @@
-require "rails_helper"
+require 'rails_helper'
 
-RSpec.describe "Lint" do
-  it "FactoryGirl" do
+RSpec.describe 'Lint' do
+  it 'FactoryGirl' do
     FactoryGirl.lint
   end
 end
