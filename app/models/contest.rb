@@ -25,6 +25,7 @@ class Contest < ApplicationRecord
   end
 
   def self.join(user_id, contest_id, password)
+    # TODO: user should only join in time between start and  start  + signup duration
     ownership = ContestOwnership.find_by(contest_id: contest_id, join_password: password)
     return nil unless ownership
     participation = ContestParticipation.new(

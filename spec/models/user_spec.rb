@@ -20,7 +20,6 @@ RSpec.describe User, type: :model do
       expect(User.register(*attrs)).to be_nil
     end
   end
-
   describe '.change_password .login' do
     let(:old_password) { 'oldPass' }
     let(:new_password) { 'newPass' }

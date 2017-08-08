@@ -1,5 +1,4 @@
 require 'rails_helper'
-
 FactoryGirl.define do
   factory :contest do
     transient do
