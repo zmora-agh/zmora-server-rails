@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 FactoryGirl.define do
   factory :user, aliases: [:author, :owner] do
     email
