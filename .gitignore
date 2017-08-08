@@ -21,3 +21,6 @@
 
 .byebug_history
 .idea
+
+db/data.yml
+
