@@ -1,4 +1,3 @@
-require 'rails_helper'
 FactoryGirl.define do
   factory :contest_problem do
     contest
