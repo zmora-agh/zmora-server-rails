@@ -3,6 +3,10 @@ AllCops:
     - 'db/**/*'
     - 'config/**/*'
     - 'lib/*_pb.rb'
+    - 'spec/*_helper.rb'
+
+Metrics/BlockLength:
+  ExcludedMethods: ['describe']
 
 Rails:
   Enabled: true
