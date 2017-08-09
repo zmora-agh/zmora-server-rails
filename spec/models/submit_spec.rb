@@ -1,31 +1,42 @@
 require 'rails_helper'
 
 describe Submit do
-  describe '#in_contest_owned_by?(contest_owner_id)' do
-    let(:participation) { create(:contest_participation) }
-    let(:problem) { create(:contest_problem, contest: participation.contest) }
-    let(:owner) { participation.contest_owner }
-    let(:submit) { create(:submit, contest_problem: problem, author: participation.user) }
+  describe '#in_contest_owned_by?' do
+    let(:participation) {create(:contest_participation)}
+    let(:owner) {participation.contest_owner}
+    let(:second_owner) {create(:contest_ownership, contest: participation.contest).owner}
+
+    subject(:submit) {
+      problem = create(:contest_problem, contest: participation.contest)
+      create(:submit, contest_problem: problem, author: participation.user)
+    }
 
     it 'owner owns contest' do
-      expect(submit.in_contest_owned_by?(owner.id)).to be true
+      is_expected.to be_in_contest_owned_by(owner.id)
     end
-    # TODO: author does not own contest
-    # todo owner who is not mentor to user does not own contest
+
+    it 'author does not own contest' do
+      is_expected.not_to be_in_contest_owned_by(submit.author.id)
+    end
+
+    it 'owner who is not mentor to submit author does not own contest' do
+      is_expected.not_to be_in_contest_owned_by(second_owner.id)
+    end
   end
 
   describe '#author?' do
-    let(:submit) { create(:submit) }
-    let(:random_user) { create(:user) }
-    it {
-      is_expected.to satisfy do
-        submit.author?(submit.author.id)
-      end
-    }
-    it {
-      is_expected.not_to satisfy do
-        submit.author?(random_user.id)
-      end
-    }
+
+    subject(:submit) {create(:submit)}
+
+    it 'author of submit: true' do
+      legit_user = submit.author
+      is_expected.to be_author(legit_user.id)
+    end
+
+    it 'random user: false' do
+      random_user = create(:user)
+      is_expected.not_to be_author(random_user.id)
+    end
+
   end
 end
