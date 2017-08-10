@@ -13,6 +13,7 @@ class ContestProblem < ApplicationRecord
   validates :soft_deadline, presence: true
   validates :required, presence: true
 
+  # wszystkie submity do tego proglemu, które może oglądac dany prowadzący (od jkego podopiecznych)
   def results(owner_id)
     results = []
     contest.contest_participations.where(contest_owner_id: owner_id).find_each do |participation|
