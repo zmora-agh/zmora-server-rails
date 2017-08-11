@@ -27,6 +27,7 @@ class Submit < ApplicationRecord
       author = submit.author
       problem = submit.contest_problem
       attempts[author] = {} unless attempts.member?(author)
+      attempts[author][problem] = 0 unless attempts[author].member?(problem)
       attempts[author][problem] = 0 if submit.status == 'ok' && !attempts[author].member?(problem)
       attempts[author][problem] += 1
     end
