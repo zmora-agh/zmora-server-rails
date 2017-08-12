@@ -1,5 +1,7 @@
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
+    - 'bin/*'
     - 'db/**/*'
     - 'config/**/*'
     - 'lib/*_pb.rb'
@@ -22,3 +24,6 @@ Style/Documentation:
 
 Style/SymbolArray:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never

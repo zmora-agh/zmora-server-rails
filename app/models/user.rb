@@ -42,6 +42,7 @@ class User < ApplicationRecord
   end
 
   def self.can_access_contest_problems?(user_id, contest)
+    return false if contest.nil? || user_id.nil?
     contest.start + contest.signup_duration < Time.current ||
       User.owner_of?(user_id, contest.id)
   end

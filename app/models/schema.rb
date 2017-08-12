@@ -208,7 +208,7 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
     argument :id, !types.Int
     resolve(lambda do |_obj, args, ctx|
       problem = ContestProblem.find_by(id: args[:id])
-      problem if User.can_access_contest_problems?(ctx['id'], problem.contest)
+      problem if User.can_access_contest_problems?(ctx['id'], problem&.contest)
     end)
   end
 
