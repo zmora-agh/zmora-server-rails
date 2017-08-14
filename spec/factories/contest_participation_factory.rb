@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :contest_participation do
-
     contest
     user
     association :contest_owner, factory: :user
@@ -9,7 +8,7 @@ FactoryGirl.define do
       unless ContestOwnership.find_by(contest: participation.contest, owner: participation.contest_owner)
 
         create(:contest_ownership, owner: participation.contest_owner,
-               contest: participation.contest)
+                                   contest: participation.contest)
       end
     end
   end
