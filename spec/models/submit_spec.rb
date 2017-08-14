@@ -37,32 +37,4 @@ describe Submit do
       is_expected.not_to be_author(random_user.id)
     end
   end
-
-  describe '#contest' do
-    let(:status) { { ok: 0, que: 1, err: 2 } }
-
-    let(:contest1) { create(:contest) }
-    let(:contest2) { create(:contest) }
-
-    let(:contest_problem11) { create(:contest_problem, contest: contest1) }
-    let(:contest_problem12) { create(:contest_problem, contest: contest1) }
-    let(:contest_problem21) { create(:contest_problem, contest: contest2) }
-    let(:contest_problem22) { create(:contest_problem, contest: contest2) }
-
-    let(:mentor1) { create(:user) }
-    let(:mentor2) { create(:user) }
-
-    let(:author1) { create(:user) }
-    let(:author2) { create(:user) }
-
-    let(:part1) { create(:contest_participation, contest: contest1, contest_owner: mentor1, user: author1) }
-
-    before(:each) do
-    end
-
-    it 'should find only  newest submit with OK status from one user to one contest_problem' do
-      # expect(@contest_problem.results(@mentor1.id)).to contain_exactly (@newer)
-      expect(2).to be 2
-    end
-  end
 end
