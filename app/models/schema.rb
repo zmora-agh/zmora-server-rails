@@ -147,6 +147,13 @@ ContestAttemptType = GraphQL::ObjectType.define do
   field :solutions, !types[ProblemSolutionType], hash_key: :solutions
 end
 
+ContestSubmitMetricsType = GraphQL::ObjectType.define do
+  name 'ContestSubmitMetrics'
+  permit :logged_in
+  field :status, !types.String, hash_key: :status
+  field :submits, !types.Int, hash_key: :submits
+end
+
 ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Contest'
   permit :logged_in
@@ -168,6 +175,13 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
     resolve(lambda do |obj, _args, ctx|
       Submit.contest_solutions(obj.id, ctx['id'])
     end)
+  end
+  field :submitMetrics do
+    type !types[ContestSubmitMetricsType]
+    resolve(lambda do |obj, _args, ctx|
+      obj.submit_metrics?(ctx['id'])
+    end)
+
   end
   field :problems do
     type types[ProblemType]
