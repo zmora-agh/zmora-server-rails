@@ -177,11 +177,8 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
     end)
   end
   field :submitMetrics do
-    type !types[ContestSubmitMetricsType]
-    resolve(lambda do |obj, _args, ctx|
-      obj.submit_metrics?(ctx['id'])
-    end)
-
+    type types[ContestSubmitMetricsType]
+    resolve ->(obj, _args, ctx) { obj.submit_metrics(ctx['id']) if User.owner_of?(ctx['id'], obj.id) }
   end
   field :problems do
     type types[ProblemType]

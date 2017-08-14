@@ -20,7 +20,7 @@ class Contest < ApplicationRecord
     start + signup_duration < Time.current
   end
 
-  def submit_metrics?(contest_owner_id)
+  def submit_metrics(contest_owner_id)
     statuses_count = Submit.joins(contest_problem: { contest: :contest_participations })
                            .where(contests: { id: id }, contest_participations: { contest_owner_id: contest_owner_id })
                            .where('contest_participations.user_id = submits.author_id')
