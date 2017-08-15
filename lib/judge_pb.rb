@@ -6,13 +6,13 @@ require 'google/protobuf'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "Task" do
     optional :task_id, :int64, 1
-    optional :configuration, :string, 2
-    repeated :files, :message, 3, "Task.File"
-    repeated :tests, :message, 4, "Task.Test"
+    repeated :files, :message, 2, "Task.File"
+    repeated :tests, :message, 3, "Task.Test"
   end
   add_message "Task.File" do
-    optional :name, :string, 1
-    optional :content, :bytes, 2
+    optional :file_id, :int64, 1
+    optional :name, :string, 2
+    optional :content, :bytes, 3
   end
   add_message "Task.Test" do
     optional :test_id, :int64, 1
@@ -23,14 +23,14 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   end
   add_message "TaskResult" do
     optional :result_id, :int64, 1
-    optional :compilation_log, :string, 2
-    repeated :tests_results, :message, 3, "TaskResult.TestResult"
+    repeated :tests_results, :message, 2, "TaskResult.TestResult"
   end
   add_message "TaskResult.TestResult" do
     optional :source_test_id, :int64, 1
     optional :status, :enum, 2, "TaskResult.Status"
-    optional :execution_time, :int64, 3
-    optional :ram_usage, :int64, 4
+    optional :user_time, :int64, 3
+    optional :system_time, :int64, 4
+    optional :ram_usage, :int64, 5
   end
   add_enum "TaskResult.Status" do
     value :OK, 0

@@ -29,8 +29,8 @@ class Judge
     result.tests_results.map do |test_result|
       submit_status = :err unless test_result.status == :OK
       TestResult.create!(status: map_task_status(test_result.status), test_id: test_result.source_test_id,
-                         execution_time: test_result.execution_time, ram_usage: test_result.ram_usage,
-                         submit_id: result.result_id)
+                         user_time: test_result.user_time, system_time: test_result.system_time,
+                         ram_usage: test_result.ram_usage, submit_id: result.result_id)
     end
     submit_status
   end
@@ -42,7 +42,7 @@ class Judge
 
   private_class_method
   def self.init_task(submit)
-    Task.new(task_id: submit.id, configuration: '', files: init_files(submit), tests: init_tests(submit))
+    Task.new(task_id: submit.id, files: init_files(submit), tests: init_tests(submit))
   end
 
   private_class_method
