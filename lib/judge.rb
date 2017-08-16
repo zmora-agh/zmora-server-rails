@@ -48,7 +48,7 @@ class Judge
   private_class_method
   def self.init_files(submit)
     submit.submit_files.all.map do |f|
-      Task::File.new(name: f.file.original_filename, content: Paperclip.io_adapters.for(f.file).read)
+      Task::File.new(file_id: f.id, name: f.file.original_filename, content: Paperclip.io_adapters.for(f.file).read)
     end
   end
 
