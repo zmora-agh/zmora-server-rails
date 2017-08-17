@@ -2,16 +2,17 @@ syntax = "proto3";
 
 message Task {
     int64 task_id = 1;
-    string configuration = 2;
-    repeated File files = 3;
-    repeated Test tests = 4;
+    repeated File files = 2;
+    repeated Test tests = 3;
+    // string configuration = 4;
 
-    message File{
-        string name = 1;
-        bytes content = 2;
+    message File {
+        int64 file_id = 1;
+        string name = 2;
+        bytes content = 3;
     }
 
-    message Test{
+    message Test {
         int64 test_id = 1;
         string input = 2;
         string output = 3;
@@ -22,17 +23,18 @@ message Task {
 
 message TaskResult {
     int64 result_id = 1;
-    string compilation_log = 2;
-    repeated TestResult tests_results = 3;
+    repeated TestResult tests_results = 2;
+    // string compilation_log = 3;
 
     message TestResult {
         int64 source_test_id = 1;
         Status status = 2;
-        int64 execution_time = 3;
-        int64 ram_usage = 4;
+        int64 user_time = 3;
+        int64 system_time = 4;
+        int64 ram_usage = 5;
     }
 
-    enum Status{
+    enum Status {
         OK = 0;
         RTE = 1;
         MEM = 2;

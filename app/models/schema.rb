@@ -59,7 +59,7 @@ TestResultType = GraphQL::ObjectType.define do
 
   field :id, !types.Int
 
-  field :executionTime, !types.Int, property: :execution_time
+  field :executionTime, !types.Int, property: :user_time
   field :ramUsage, !types.Int, property: :ram_usage
   field :status, !types.String
   field :test do
