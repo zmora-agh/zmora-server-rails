@@ -5,6 +5,11 @@ class ApplicationController < ActionController::API
 
   def authenticate_request!
     @current_user = payload
+    if @current_user
+      Raven.user_context('id': @current_user['id'], 'username': @current_user['nick'])
+    else
+      Raven.user_context({})
+    end
   end
 
   private
