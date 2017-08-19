@@ -5,6 +5,7 @@ FactoryGirl.define do
     category 'cat'
     base_points 10
     soft_deadline { Date.tomorrow }
+    hard_deadline { Date.tomorrow }
     required true
     shortcode
   end

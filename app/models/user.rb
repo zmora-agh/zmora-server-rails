@@ -34,7 +34,8 @@ class User < ApplicationRecord
 
   def self.can_submit_to?(user_id, problem_id)
     contest = ContestProblem.find(problem_id).contest
-    ContestParticipation.exists?(contest: contest, user_id: user_id) && contest.in_progress?
+    ContestParticipation.exists?(contest: contest, user_id: user_id) &&
+      contest.in_progress? && !ContestProblem.hard_overdue?(problem_id)
   end
 
   def self.owner_of?(user_id, contest_id)

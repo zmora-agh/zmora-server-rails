@@ -10,6 +10,9 @@ AllCops:
 Metrics/BlockLength:
   ExcludedMethods: ['describe']
 
+Metrics/AbcSize:
+  Max: 20
+
 Rails:
   Enabled: true
 
