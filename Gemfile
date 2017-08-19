@@ -67,3 +67,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem 'bunny'
 gem 'protobuf'
 gem 'google-protobuf'
+
+gem 'sentry-raven'
