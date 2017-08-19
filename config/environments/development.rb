@@ -48,4 +48,5 @@ Rails.application.configure do
   config.rabbitmq_uri = 'amqp://localhost'
   config.tasks_queue_name = 'tasks'
   config.tasks_results_queue_name = 'tasksResults'
+  config.tasks_results_error_queue_name = 'tasksResultsError'
 end

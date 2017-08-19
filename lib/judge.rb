@@ -12,14 +12,33 @@ class Judge
   end
 
   def self.start_receive_results
-    rabbit = RabbitMQ.new(Rails.configuration.tasks_results_queue_name, Rails.configuration.rabbitmq_uri)
-    rabbit.start_receiving do |payload|
-      result = TaskResult.decode(payload)
+    rabbit = RabbitMQ.new(
+      Rails.configuration.tasks_results_queue_name,
+      Rails.configuration.rabbitmq_uri,
+      Rails.configuration.tasks_results_error_queue_name
+    )
+    rabbit.start_receiving do |payload, delivery_info|
+      Judge.handle_task_result(rabbit, payload, delivery_info)
+    end
+  end
 
-      Submit.transaction do
-        submit_status = create_tests_results(result)
-        Submit.find(result.result_id).update(status: submit_status)
-      end
+  private_class_method
+  def self.handle_task_result(rabbit, payload, delivery_info)
+    result = TaskResult.decode(payload)
+    save_result(delivery_info, rabbit, result)
+  rescue => exception
+    rabbit.send_error(payload)
+    rabbit.ack(delivery_info.delivery_tag)
+    Raven.capture_exception(exception)
+    raise
+  end
+
+  private_class_method
+  def self.save_result(delivery_info, rabbit, result)
+    Submit.transaction do
+      submit_status = create_tests_results(result)
+      Submit.find(result.result_id).update!(status: submit_status)
+      rabbit.ack(delivery_info.delivery_tag)
     end
   end
 
