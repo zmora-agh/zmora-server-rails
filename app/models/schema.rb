@@ -62,10 +62,7 @@ TestResultType = GraphQL::ObjectType.define do
   field :executionTime, !types.Int, property: :user_time
   field :ramUsage, !types.Int, property: :ram_usage
   field :status, !types.String
-  field :test do
-    type !types.Int
-    resolve ->(_obj, _args, _ctx) { 44 } # some random value
-  end
+  field :test, !types.Int, property: :test_id
 end
 
 SubmitType = GraphQL::ObjectType.define do
