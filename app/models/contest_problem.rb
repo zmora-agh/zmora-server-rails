@@ -11,6 +11,7 @@ class ContestProblem < ApplicationRecord
   validates :category, presence: true
   validates :base_points, presence: true
   validates :soft_deadline, presence: true
+  validates :hard_deadline, presence: true
   validates :required, presence: true
 
   # get all the submits for this problem that can be viewed by this owner
@@ -22,5 +23,9 @@ class ContestProblem < ApplicationRecord
       results.push(best_submit_of_user) if best_submit_of_user
     end
     results
+  end
+
+  def self.hard_overdue?(problem_id)
+    ContestProblem.find(problem_id).hard_deadline < Time.current
   end
 end

@@ -19,11 +19,18 @@ class ForbiddenError < ZmoraGraphqlError
   end
 end
 
+class UnauthorizedError < ZmoraGraphqlError
+  def initialize
+    super(401, 'Unauthorized')
+  end
+end
+
 class AuthorizationMiddleware
   def call(parent_type, _parent_object, field_definition, _field_args, query_context)
     @ctx = query_context
     return yield if parent_type.introspection?
     return yield if validate_type(parent_type) && validate_field(field_definition)
+    return UnauthorizedError.new unless logged_in
     ForbiddenError.new
   end
 
