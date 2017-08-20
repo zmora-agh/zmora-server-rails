@@ -2,7 +2,7 @@
 * Ruby 2.3+
 * local PostgreSQL instance
 * `libpq-dev` (when `pg` gem fails to build native extension)
-* (temporarily) local RabbitMQ instance
+* local RabbitMQ instance
 
 ## Database creation
 ``` postgresql
@@ -48,3 +48,24 @@ Run `bin/rails db:migrate RAILS_ENV=development`.
 
 ### Start the server
 Run `bin/rails s`. The server should be accessible from http://localhost:3001.
+
+## Retrying failed DB transactions (requeueing judge results)
+Judge results consumed from RabbitMQ queue are persistently stored in database.
+When DB transaction fails (e.g. due to DB unavailability, constraint
+violation or other errors), source message (judge result) will be moved
+to error queue (by default `tasksResultsError`.)
+
+Pending messages can be reprocessed by moving messages from error queue – this
+is time where RabbitMQ shovel plugin kicks in. To enable it, type:
+```
+rabbitmq-plugins enable rabbitmq_shovel rabbitmq_shovel_management
+```
+(This command enables GUI management plugin too.)
+
+Now you can move pending messages by running
+```
+rabbitmqctl set_parameter shovel results '{"src-uri": "amqp://", "src-queue": "taskResultsError", "dest-uri": "amqp://", "dest-queue": "taskResults", "delete-after": "queue-length"}'
+```
+
+This command should be run periodically in production environment (e.g. by
+`cron`.)
