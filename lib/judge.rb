@@ -35,10 +35,12 @@ class Judge
 
   private_class_method
   def self.save_result(delivery_info, rabbit, result)
-    Submit.transaction do
-      submit_status = create_tests_results(result)
-      Submit.find(result.result_id).update!(status: submit_status)
-      rabbit.ack(delivery_info.delivery_tag)
+    ActiveRecord::Base.connection_pool.with_connection do
+      Submit.transaction do
+        submit_status = create_tests_results(result)
+        Submit.find(result.result_id).update!(status: submit_status)
+        rabbit.ack(delivery_info.delivery_tag)
+      end
     end
   end
 
