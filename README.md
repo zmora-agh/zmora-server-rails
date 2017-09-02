@@ -40,8 +40,8 @@ sudo systemctl enable rabbitmq-server
 Run `sudo -u postgres psql` then copy-paste script from the database creation
 section.
 
-### Install local gems
-Run `bin/bundle install --path vendor/bundle`.
+### Install `bundler` and local gems
+Run `gem install bundler` and `bin/bundle install --path vendor/bundle`.
 
 ### Run database migrations
 Run `bin/rails db:migrate RAILS_ENV=development`.
