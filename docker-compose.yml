@@ -23,7 +23,7 @@ services:
       - rabbitmq:/var/lib/rabbitmq
     restart: always
   api:
-    image: zmora-server
+    image: zmoraagh/zmora-server
     environment:
       ZMORA_DB_HOST: db
       ZMORA_DB_USER: zmora
@@ -37,7 +37,7 @@ services:
       - rails-data:/opt/zmora-server/public
     restart: always
   rabbit-listener:
-    image: zmora-server
+    image: zmoraagh/zmora-server
     environment:
       ZMORA_DB_HOST: db
       ZMORA_DB_USER: zmora
