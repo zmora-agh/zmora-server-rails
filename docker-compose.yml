@@ -7,6 +7,7 @@ services:
       POSTGRES_PASSWORD: szatan
       POSTGRES_USER: zmora
       POSTGRES_DB: zmora
+    restart: always
   rabbitmq:
     image: "rabbitmq:3.6.11-management"
     environment:
@@ -14,7 +15,8 @@ services:
       RABBITMQ_DEFAULT_USER: zmora
       RABBITMQ_DEFAULT_PASS: szatan
     ports:
-      - "15672"
+      - "15672:15672"
+    restart: always
   api:
     build: .
     environment:
@@ -26,4 +28,16 @@ services:
       SECRET_KEY_BASE: d8efe34de6c2d4bcdd8a6c212f04f90068b37d314c69837cb7ca63e15863829d8ba64d77343d6a77bff717ab90c27360b9719c4d15991977109853b84490e8f4
     ports:
       - "3000:80"
+    restart: always
+  rabbit-listener:
+    build: .
+    environment:
+      ZMORA_DB_HOST: db
+      ZMORA_DB_USER: zmora
+      ZMORA_DB_PASSWORD: szatan
+      ZMORA_DB_NAME: zmora
+      ZMORA_RABBITMQ_URI: "amqp://zmora:szatan@rabbitmq"
+      SECRET_KEY_BASE: d8efe34de6c2d4bcdd8a6c212f04f90068b37d314c69837cb7ca63e15863829d8ba64d77343d6a77bff717ab90c27360b9719c4d15991977109853b84490e8f4
+    command: bundle exec -- ./bin/rake zmora:listen_rabbit RAILS_ENV=production
+    restart: always
 

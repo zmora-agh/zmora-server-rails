@@ -11,13 +11,13 @@ class Judge
     rabbit.close
   end
 
-  def self.start_receive_results
+  def self.start_receive_results(block = false)
     rabbit = RabbitMQ.new(
       Rails.configuration.tasks_results_queue_name,
       Rails.configuration.rabbitmq_uri,
       Rails.configuration.tasks_results_error_queue_name
     )
-    rabbit.start_receiving do |payload, delivery_info|
+    rabbit.start_receiving(block) do |payload, delivery_info|
       Judge.handle_task_result(rabbit, payload, delivery_info)
     end
   end
