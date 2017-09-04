@@ -21,8 +21,8 @@ class RabbitMQ
     @ch.ack(delivery_tag, false)
   end
 
-  def start_receiving
-    @que.subscribe(manual_ack: true) do |delivery_info, _metadata, payload|
+  def start_receiving(block)
+    @que.subscribe(manual_ack: true, block: block) do |delivery_info, _metadata, payload|
       yield payload, delivery_info
     end
   end
