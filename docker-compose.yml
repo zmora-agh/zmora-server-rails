@@ -7,18 +7,23 @@ services:
       POSTGRES_PASSWORD: szatan
       POSTGRES_USER: zmora
       POSTGRES_DB: zmora
+    volumes:
+      - psql-db:/var/lib/postgresql/data
     restart: always
   rabbitmq:
     image: "rabbitmq:3.6.11-management"
+    hostname: rabbitmq
     environment:
       RABBITMQ_VM_MEMORY_HIGH_WATERMARK: 256MiB
       RABBITMQ_DEFAULT_USER: zmora
       RABBITMQ_DEFAULT_PASS: szatan
     ports:
       - "15672:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
     restart: always
   api:
-    build: .
+    image: zmora-server
     environment:
       ZMORA_DB_HOST: db
       ZMORA_DB_USER: zmora
@@ -28,9 +33,11 @@ services:
       SECRET_KEY_BASE: d8efe34de6c2d4bcdd8a6c212f04f90068b37d314c69837cb7ca63e15863829d8ba64d77343d6a77bff717ab90c27360b9719c4d15991977109853b84490e8f4
     ports:
       - "3000:80"
+    volumes:
+      - rails-data:/opt/zmora-server/public
     restart: always
   rabbit-listener:
-    build: .
+    image: zmora-server
     environment:
       ZMORA_DB_HOST: db
       ZMORA_DB_USER: zmora
@@ -41,3 +48,7 @@ services:
     command: bundle exec -- ./bin/rake zmora:listen_rabbit RAILS_ENV=production
     restart: always
 
+volumes:
+  psql-db:
+  rails-data:
+  rabbitmq:
