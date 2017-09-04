@@ -1,0 +1,21 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /opt/zmora-server/public;
+	passenger_ruby /usr/local/bin/ruby;
+
+	server_name _;
+	passenger_enabled on;
+	passenger_app_env production;
+	passenger_env_var GEM_HOME /opt/zmora-server/vendor/bundle/ruby/2.4.0;
+	passenger_env_var RAILS_LOG_TO_STDOUT 1;
+	passenger_env_var ZMORA_DB_HOST $ZMORA_DB_HOST;
+	passenger_env_var ZMORA_DB_USER $ZMORA_DB_USER;
+	passenger_env_var ZMORA_DB_PASSWORD $ZMORA_DB_PASSWORD;
+	passenger_env_var ZMORA_DB_NAME $ZMORA_DB_NAME;
+	passenger_env_var ZMORA_RABBITMQ_URI $ZMORA_RABBITMQ_URI;
+	passenger_env_var SECRET_KEY_BASE $SECRET_KEY_BASE;
+	passenger_friendly_error_pages on;
+}
+

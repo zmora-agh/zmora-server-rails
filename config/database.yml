@@ -8,9 +8,9 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
-  username: zmora
-  password: szatan
+  host: <%= ENV.fetch("ZMORA_DB_HOST") { "localhost" } %>
+  username: <%= ENV.fetch("ZMORA_DB_USER") { "zmora" } %>
+  password: <%= ENV.fetch("ZMORA_DB_PASSWORD") { "szatan" } %>
 
 development:
   <<: *default
@@ -25,4 +25,4 @@ test:
 
 production:
   <<: *default
-  database: zmora-ror
+  database: <%= ENV.fetch("ZMORA_DB_NAME") { "zmora-ror" } %>

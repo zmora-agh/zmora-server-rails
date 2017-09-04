@@ -21,17 +21,10 @@ gem 'puma', '~> 3.7'
 gem 'knock'
 gem 'cancancan'
 gem 'graphql'
-gem 'graphiql-rails'
 gem 'paperclip'
-
-# For graphiql
-gem 'sass-rails'
-gem 'uglifier'
-gem 'coffee-rails'
 
 # Graphite
 gem 'graphite-api'
-
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -54,6 +47,12 @@ group :development do
   gem 'rubocop', require: false
   gem 'rubocop-checkstyle_formatter', require: false
   gem 'guard-rspec', require: false
+
+  gem 'graphiql-rails'
+  # For graphiql
+  gem 'sass-rails'
+  gem 'uglifier'
+  gem 'coffee-rails'
 end
 
 group :test do
