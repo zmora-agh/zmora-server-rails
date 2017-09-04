@@ -39,4 +39,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Graphite
+  config.graphite_uri = ENV['GRAPHITE_URI']
+  config.graphite_prefix = ['zmora', Rails.application.class.parent_name.underscore, Socket.gethostname]
 end

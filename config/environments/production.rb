@@ -84,4 +84,9 @@ Rails.application.configure do
   config.rabbitmq_uri = 'amqp://localhost'
   config.tasks_queue_name = 'tasks'
   config.tasks_results_queue_name = 'tasksResults'
+  config.tasks_results_error_queue_name = 'tasksResultsError'
+
+  # Graphite
+  config.graphite_uri = ENV['GRAPHITE_URI']
+  config.graphite_prefix = ['zmora', Rails.application.class.parent_name.underscore, Socket.gethostname]
 end

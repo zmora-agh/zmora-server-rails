@@ -286,4 +286,5 @@ Schema = GraphQL::Schema.define do
   query QueryType
   mutation MutationType
   middleware AuthorizationMiddleware.new
+  Rails.configuration.graphite_uri && instrument(:query, GraphiteInstrumentation)
 end
