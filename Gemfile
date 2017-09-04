@@ -29,6 +29,9 @@ gem 'sass-rails'
 gem 'uglifier'
 gem 'coffee-rails'
 
+# Graphite
+gem 'graphite-api'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
