@@ -7,6 +7,7 @@ class Graphite
 
   def initialize
     @client = GraphiteAPI.new(graphite: Rails.configuration.graphite_uri, prefix: Rails.configuration.graphite_prefix)
+    Rails.logger.info "Connecting to graphite #{Rails.configuration.graphite_uri}"
   end
 
   def subscribe_ruby_metrics
