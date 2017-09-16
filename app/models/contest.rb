@@ -4,6 +4,7 @@ class Contest < ApplicationRecord
   validates :start, presence: true
   validates :signup_duration, presence: true
   validates :duration, presence: true
+  validates :can_join_started, inclusion: [true, false]
 
   has_many :contest_ownerships
   has_many :owners, through: :contest_ownerships

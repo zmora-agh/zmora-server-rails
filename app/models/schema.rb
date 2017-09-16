@@ -166,6 +166,7 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
   field :name, !types.String
   field :signupDuration, !types.Int, property: :signup_duration
   field :start, !types.String
+  field :canJoinStarted, !types.Boolean, property: :can_join_started
   field :owners, types[UserType]
   field :ranking do
     type !types[ContestAttemptType]
