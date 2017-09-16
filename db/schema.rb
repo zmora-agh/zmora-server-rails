@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815192401) do
+ActiveRecord::Schema.define(version: 20170916194957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 20170815192401) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "can_join_started", null: false
   end
 
   create_table "problem_examples", force: :cascade do |t|
@@ -101,6 +102,7 @@ ActiveRecord::Schema.define(version: 20170815192401) do
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_questions_on_author_id"
     t.index ["contest_problem_id"], name: "index_questions_on_contest_problem_id"
+    t.index ["question"], name: "questions_question_uindex", unique: true
   end
 
   create_table "submit_files", force: :cascade do |t|

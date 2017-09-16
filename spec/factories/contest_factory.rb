@@ -11,6 +11,7 @@ FactoryGirl.define do
     signup_duration 3600 * 12
     # contest is in progess (1.day.ago + 12 h + 5 day > Time.current)
     duration 3600 * 24 * 5
+    can_join_started true
 
     after(:create) do |contest, evaluator|
       contest.duration = 3600 * 8 unless evaluator.in_progress
