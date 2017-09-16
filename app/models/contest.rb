@@ -21,6 +21,10 @@ class Contest < ApplicationRecord
     start + signup_duration < Time.current
   end
 
+  def in_enrolment?
+    start < Time.current && !started?
+  end
+
   def submit_metrics(contest_owner_id)
     statuses_count = Submit.joins(contest_problem: { contest: :contest_participations })
                            .where(contests: { id: id }, contest_participations: { contest_owner_id: contest_owner_id })
@@ -35,8 +39,13 @@ class Contest < ApplicationRecord
     users.exists?(id: user_id)
   end
 
+  def self.can_join(contest_id)
+    contest = Contest.find(contest_id)
+    contest&.in_enrolment? || (contest&.can_join_started && contest&.in_progress?)
+  end
+
   def self.join(user_id, contest_id, password)
-    # TODO: user should only join in time between start and  start  + signup duration
+    return nil unless can_join(contest_id)
     ownership = ContestOwnership.find_by(contest_id: contest_id, join_password: password)
     return nil unless ownership
     participation = ContestParticipation.new(
