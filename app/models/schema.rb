@@ -193,7 +193,7 @@ QueryType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   permit :everyone
 
   field :users do
-    permit :logged_in
+    permit :admin
     type types[UserType]
     description 'All users registered to zmora'
     resolve ->(_obj, _args, _ctx) { User.all }
