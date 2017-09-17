@@ -25,14 +25,14 @@ class User < ApplicationRecord
     return nil unless user.authenticate(password)
     payload = { nick: user.nick, name: user.name,
                 about: user.about, id: user.id,
-                admin: true }
+                admin: false }
     JsonWebTokens.encode(payload)
   end
 
   def self.register(nick, password, name, email)
     user = User.new(nick: nick, password: password, name: name, email: email)
     return nil unless user.save
-    payload = { nick: user.nick, name: user.name, id: user.id, admin: true }
+    payload = { nick: user.nick, name: user.name, id: user.id, admin: false }
     JsonWebTokens.encode(payload)
   end
 
