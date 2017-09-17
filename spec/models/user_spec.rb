@@ -24,8 +24,8 @@ RSpec.describe User, type: :model do
   end
 
   describe '.change_password .login' do
-    let(:old_password) { 'oldPass' }
-    let(:new_password) { 'newPass' }
+    let(:old_password) { 'oldPass123' }
+    let(:new_password) { 'newPass123' }
     let(:user) { create(:user, password: old_password) }
 
     before do

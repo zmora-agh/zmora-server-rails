@@ -11,9 +11,13 @@ class User < ApplicationRecord
   has_many :joined_contests, class_name: 'Contest', through: :contest_participations, source: :contest
   has_many :submits, foreign_key: 'author_id'
 
-  validates :nick,  presence: true, uniqueness: { case_sensitive: false }
+  validates :nick, presence: true, uniqueness: { case_sensitive: false }
+  validates :nick, format: { with: /\A[a-z0-9._-]{3,15}\z/i }
   validates :email, presence: true, uniqueness: { case_sensitive: false }
+  validates :email, format: { with: /\A([\w.+-]+)@([\w-]+\.)*([\w-]+)\z/i }
   validates :name, presence: true
+  validates :name, format: { with: /\A[a-zA-z ]+\z/i }
+  validates :password, format: { with: /\A.{8,}\z/ }
 
   def self.login(nick, password)
     user = User.find_by(nick: nick)
