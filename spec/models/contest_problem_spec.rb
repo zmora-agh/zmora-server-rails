@@ -18,7 +18,8 @@ RSpec.describe ContestProblem, type: :model do
       @wrong = submit11.curry[@status[:err]][Date.new(2017, 8, 9)]
     end
 
-    it 'should find only  newest submit with OK status from one user to one contest_problem' do
+    it 'should find only  newest submit with OK status for each (user,contest_problem) pair.
+      [Tested on 1 user and 1 contest_problem]' do
       expect(@contest_problem.results(@mentor1.id)).to contain_exactly @newer
     end
   end
