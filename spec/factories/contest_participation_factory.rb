@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :contest_participation do
-    contest
+    association :contest, :in_progress
     user
     association :contest_owner, factory: :user
 
