@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :contest_problem do
-    contest
+    association :contest, :in_progress
     problem
     category 'cat'
     base_points 10
