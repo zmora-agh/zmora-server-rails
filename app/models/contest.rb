@@ -13,10 +13,12 @@ class Contest < ApplicationRecord
 
   has_many :contest_problems
 
+  # Are users able to submit new solutions now?
   def in_progress?
     started? && start + signup_duration + duration > Time.current
   end
 
+  # Were users (or still are) able to submit new solutions?
   def started?
     start + signup_duration < Time.current
   end
