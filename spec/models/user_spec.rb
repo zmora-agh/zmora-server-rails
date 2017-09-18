@@ -96,15 +96,58 @@ RSpec.describe User, type: :model do
   end
 
   describe '.can_submit_to?' do
-    let(:contest_problem) { create(:contest_problem) }
-    let(:contest_participations) { create(:contest_participation, contest: contest_problem.contest) }
+    def setup_problem_with_user(contest_state, joined)
+      contest = create(:contest, contest_state)
+      contest_problem = create(:contest_problem, contest: contest)
+      user = create(:user)
+      create(:contest_participation, user: user, contest: contest) if joined
+      [contest_problem.id, user.id]
+    end
 
-    it 'participant can submit to problem when contest is in progress' do
-      participant = contest_participations.user.id
-      expect(
-        User.can_submit_to?(participant, contest_problem.id)
-      ).to be true
-      # TODO: can't submit  when not in progress
+    def can_submit_to(contest_state, joined)
+      problem_id, user_id = setup_problem_with_user(contest_state, joined)
+      User.can_submit_to?(user_id, problem_id)
+    end
+
+    context 'contest before signup' do
+      it "any user can't submit to problem in contest" do
+        expect(can_submit_to(:before_signup, false)).to be false
+      end
+    end
+
+    context 'contest in enrollment' do
+      it "participant can't submit to problem in contest" do
+        expect(can_submit_to(:in_enrolment, true)).to be false
+      end
+    end
+
+    context 'contest in progress' do
+      it 'participant can submit to problem in contest' do
+        expect(can_submit_to(:in_progress, true)).to be true
+      end
+
+      it "outsider can't submit to contest" do
+        problem_id, = setup_problem_with_user(:in_progress, true)
+        outsider_id = create(:user).id
+        expect(User.can_submit_to?(outsider_id, problem_id)).to be false
+      end
+    end
+
+    context 'ended contest' do
+      it "participant can't submit to problem in contest" do
+        expect(can_submit_to(:ended, true)).to be false
+      end
+    end
+
+    context 'problem after hard deadline' do
+      it "participant can't submit solution" do
+        contest_participation = create(:contest_participation)
+        user = contest_participation.user
+        dead_problem = create(:contest_problem, contest: contest_participation.contest, hard_deadline: Date.yesterday)
+        alive_problem = create(:contest_problem, contest: contest_participation.contest, hard_deadline: Date.tomorrow)
+        expect(User.can_submit_to?(user.id, dead_problem.id)).to be false
+        expect(User.can_submit_to?(user.id, alive_problem.id)).to be true
+      end
     end
   end
 end
