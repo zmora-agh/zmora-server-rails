@@ -21,6 +21,32 @@ RSpec.describe User, type: :model do
       expect(User.register(attrs[:nick], attrs[:password],
                            attrs[:name], attrs[:email])).to be_nil
     end
+
+    it "can't register user with password shorter than 8 characters" do
+      expect(User.register(attrs[:nick], '', attrs[:name], attrs[:email])).to be_nil
+      expect(User.register(attrs[:nick], 'XD', attrs[:name], attrs[:email])).to be_nil
+      expect(User.register(attrs[:nick], 'XDDDDDD', attrs[:name], attrs[:email])).to be_nil
+    end
+
+    it "can't register user with invalid username" do
+      expect(User.register('', attrs[:password], attrs[:name], attrs[:email])).to be_nil
+      expect(User.register('żółciutki kwiatuszek', attrs[:password], attrs[:name], attrs[:email])).to be_nil
+      expect(User.register('( ͡° ͜ʖ ͡°)', attrs[:password], attrs[:name], attrs[:email])).to be_nil
+      expect(User.register('                ', attrs[:password], attrs[:name], attrs[:email])).to be_nil
+    end
+
+    it "can't register user with invalid e-mail" do
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], '')).to be_nil
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], 'user')).to be_nil
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], 'user@')).to be_nil
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], '          ')).to be_nil
+    end
+
+    it "can't register user with invalid name" do
+      expect(User.register(attrs[:nick], attrs[:password], '', attrs[:email])).to be_nil
+      expect(User.register(attrs[:nick], attrs[:password], '             ', attrs[:email])).to be_nil
+      expect(User.register(attrs[:nick], attrs[:password], 'Александр Пистолетов', attrs[:email])).to be_nil
+    end
   end
 
   describe '.change_password .login' do
