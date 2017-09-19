@@ -20,7 +20,7 @@ RSpec.describe Contest, type: :model do
     Contest.join(user.id, contest.id, invalid_password)
   end
 
-  describe '#join' do
+  describe '.join' do
     it "user can't join with invalid password" do
       expect(join_with_invalid_password).to be_nil
     end
@@ -73,7 +73,7 @@ RSpec.describe Contest, type: :model do
     end
   end
 
-  context 'contest before signup' do
+  context 'before signup' do
     let(:contest_before_signup) { create(:contest, :before_signup) }
     it { expect(contest_before_signup).not_to be_started }
     it { expect(contest_before_signup).not_to be_in_enrolment }
