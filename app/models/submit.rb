@@ -20,18 +20,24 @@ class Submit < ApplicationRecord
     .where(contests: { id: contest_id }, contest_participations: { contest_owner_id: contest_owner_id })
   })
 
-  def self.contest_solutions(contest_id, contest_owner_id) # rubocop:disable Metrics/AbcSize
-    attempts = {}
+  def ok?
+    status == 'ok'
+  end
 
-    Submit.contest(contest_id, contest_owner_id).eager_load(:contest_problem, :author).order(:status).map do |submit|
-      author = submit.author
-      problem = submit.contest_problem
-      attempts[author] = {} unless attempts.member?(author)
-      attempts[author][problem] = 0 if submit.status == 'ok' && !attempts[author].member?(problem)
-      attempts[author][problem] += 1
+  def not_ok?
+    !ok?
+  end
+
+  def self.contest_solutions(contest_id, contest_owner_id)
+    attempts = ->(submits) { submits.sort_by(&:created_at).take_while(&:not_ok?).length + 1 }
+    solutions = lambda do |submits|
+      submits.group_by(&:contest_problem)
+             .select { |_, problem_submits| problem_submits.any?(&:ok?) }
+             .map { |problem, problem_submits| { problem: problem, attempts: attempts.call(problem_submits) } }
     end
-
-    attempts.map { |user, solution| { user: user, solutions: solution.map { |s| { problem: s[0], attempts: s[1] } } } }
+    Submit.contest(contest_id, contest_owner_id).eager_load(:contest_problem, :author)
+          .group_by(&:author)
+          .map { |author, submits| { user: author, solutions: solutions.call(submits) } }
   end
 
   def author?(user_id)
