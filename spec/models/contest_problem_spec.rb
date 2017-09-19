@@ -27,4 +27,14 @@ RSpec.describe ContestProblem, type: :model do
   def create_submit(participation, problem, stat, created_at)
     create(:submit, contest_problem: problem, author: participation.user, status: stat, created_at: created_at)
   end
+
+  describe '.hard_overdue?' do
+    context 'before deadline' do
+      it { expect(ContestProblem.hard_overdue?(create(:contest_problem, hard_deadline: Date.tomorrow).id)).to be false }
+    end
+
+    context 'after deadline' do
+      it { expect(ContestProblem.hard_overdue?(create(:contest_problem, hard_deadline: Date.yesterday).id)).to be true }
+    end
+  end
 end
