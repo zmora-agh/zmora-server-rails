@@ -58,4 +58,10 @@ class Contest < ApplicationRecord
     raise ArgumentError if participation.invalid? && participation.errors[:contest_id].any?
     participation.save
   end
+
+  def participations(owner_id)
+    contest_participations.where(contest_owner: owner_id).order(:created_at).map do |participation|
+      { user: participation.user, joined: participation.created_at }
+    end
+  end
 end
