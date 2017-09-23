@@ -15,6 +15,7 @@ server {
 	passenger_env_var ZMORA_DB_PASSWORD $ZMORA_DB_PASSWORD;
 	passenger_env_var ZMORA_DB_NAME $ZMORA_DB_NAME;
 	passenger_env_var ZMORA_RABBITMQ_URI $ZMORA_RABBITMQ_URI;
+	passenger_env_var SENTRY_DSN $SENTRY_DSN;
 	passenger_env_var SECRET_KEY_BASE $SECRET_KEY_BASE;
 	passenger_env_var GRAPHITE_URI $GRAPHITE_URI;
 	passenger_friendly_error_pages on;
