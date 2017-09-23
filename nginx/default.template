@@ -7,6 +7,7 @@ server {
 
 	server_name _;
 	passenger_enabled on;
+	passenger_user www-data;
 	passenger_app_env production;
 	passenger_env_var GEM_HOME /opt/zmora-server/vendor/bundle/ruby/2.4.0;
 	passenger_env_var RAILS_LOG_TO_STDOUT 1;
