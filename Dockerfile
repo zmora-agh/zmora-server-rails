@@ -23,6 +23,8 @@ RUN sed -i '/passenger.conf;/s/# //g' /etc/nginx/nginx.conf \
 
 COPY . .
 
+RUN chown -R www-data:www-data $INSTALL_PATH/public
+
 EXPOSE 80
 
 STOPSIGNAL SIGTERM
