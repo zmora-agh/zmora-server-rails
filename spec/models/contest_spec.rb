@@ -105,4 +105,35 @@ RSpec.describe Contest, type: :model do
     ownership = create(:contest_ownership, contest: contest)
     ownership.join_password
   end
+
+  describe '.participations' do
+    let(:ownership) { create(:contest_ownership) }
+    let(:contest) { ownership.contest }
+    let(:owner) { ownership.owner }
+
+    context 'when contest has no participants' do
+      it { expect(contest.participations(owner.id)).to be_empty }
+    end
+
+    it 'should list participations chronologically' do
+      user1 = create(:contest_participation, contest: contest, contest_owner: owner,
+                                             created_at: 1.week.ago.at_noon).user
+      user2 = create(:contest_participation, contest: contest, contest_owner: owner,
+                                             created_at: 2.years.ago.at_midnight).user
+      expect(contest.participations(owner.id)).to match_array([
+                                                                { user: user2, joined: 2.years.ago.at_midnight },
+                                                                { user: user1, joined: 1.week.ago.at_noon }
+                                                              ])
+    end
+
+    it 'should distinguish other tutors' do
+      other_owner = create(:contest_ownership, contest: contest).owner
+      user1 = create(:contest_participation, contest: contest, contest_owner: owner,
+                                             created_at: Date.yesterday.at_noon).user
+      user2 = create(:contest_participation, contest: contest, contest_owner: other_owner,
+                                             created_at: 2.days.ago.at_midday).user
+      expect(contest.participations(owner.id)).to eq([{ user: user1, joined: Date.yesterday.at_noon }])
+      expect(contest.participations(other_owner.id)).to eq([{ user: user2, joined: 2.days.ago.at_midday }])
+    end
+  end
 end

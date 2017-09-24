@@ -151,6 +151,13 @@ ContestSubmitMetricsType = GraphQL::ObjectType.define do
   field :submits, !types.Int, hash_key: :submits
 end
 
+ContestParticipationType = GraphQL::ObjectType.define do
+  name 'ContestParticipation'
+  permit :logged_in
+  field :user, !UserType, hash_key: :user
+  field :joined, !types.String, hash_key: :joined
+end
+
 ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLength
   name 'Contest'
   permit :logged_in
@@ -185,6 +192,10 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
       return result if User.can_access_contest_problems?(ctx['id'], obj)
       []
     end)
+  end
+  field :participations do
+    type types[ContestParticipationType]
+    resolve ->(obj, _args, ctx) { obj.participations(ctx['id']) }
   end
 end
 
