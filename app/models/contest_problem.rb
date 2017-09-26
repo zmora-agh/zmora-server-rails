@@ -12,7 +12,7 @@ class ContestProblem < ApplicationRecord
   validates :base_points, presence: true
   validates :soft_deadline, presence: true
   validates :hard_deadline, presence: true
-  validates :required, presence: true
+  validates :required, inclusion: { in: [true, false] }
 
   # get all the submits for this problem that can be viewed by this owner
   # only one (newest with status OK) submit is retrieved per participant
