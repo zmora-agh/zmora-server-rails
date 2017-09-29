@@ -36,6 +36,7 @@ class Submit < ApplicationRecord
              .map { |problem, problem_submits| { problem: problem, attempts: attempts.call(problem_submits) } }
     end
     Submit.contest(contest_id, contest_owner_id).eager_load(:contest_problem, :author)
+          .order('contest_problems.required DESC', 'contest_problems.created_at')
           .group_by(&:author)
           .map { |author, submits| { user: author, solutions: solutions.call(submits) } }
   end

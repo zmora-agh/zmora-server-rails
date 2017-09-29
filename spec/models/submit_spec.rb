@@ -114,5 +114,28 @@ describe Submit do
       expect(contest_solutions[0][:solutions][0][:attempts]).to eq(1)
       expect(contest_solutions[1][:solutions][0][:attempts]).to eq(1)
     end
+
+    it 'sorts problems in order: required then optional, created_at' do
+      later_optional_problem = create(:contest_problem, contest: contest, required: false, created_at: 2.days.ago)
+      create(:submit, author: participant, contest_problem: later_optional_problem)
+
+      earlier_required_problem = create(:contest_problem, contest: contest, required: true, created_at: 3.days.ago)
+      create(:submit, author: participant, contest_problem: earlier_required_problem)
+
+      earlier_optional_problem = create(:contest_problem, contest: contest, required: false, created_at: 4.days.ago)
+      create(:submit, author: participant, contest_problem: earlier_optional_problem)
+
+      later_required_problem = create(:contest_problem, contest: contest, required: true, created_at: 1.day.ago)
+      create(:submit, author: participant, contest_problem: later_required_problem)
+
+      expect(contest_solutions).to eq([
+                                        { user: participant, solutions: [
+                                          { problem: earlier_required_problem, attempts: 1 },
+                                          { problem: later_required_problem, attempts: 1 },
+                                          { problem: earlier_optional_problem, attempts: 1 },
+                                          { problem: later_optional_problem, attempts: 1 }
+                                        ] }
+                                      ])
+    end
   end
 end
