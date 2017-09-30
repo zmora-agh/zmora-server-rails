@@ -188,7 +188,7 @@ ContestType = GraphQL::ObjectType.define do # rubocop:disable Metrics/BlockLengt
   field :problems do
     type types[ProblemType]
     resolve(lambda do |obj, _args, ctx|
-      result = obj.contest_problems
+      result = obj.contest_problems.order(:created_at)
       return result if User.can_access_contest_problems?(ctx['id'], obj)
       []
     end)
