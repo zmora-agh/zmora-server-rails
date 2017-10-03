@@ -47,6 +47,15 @@ RSpec.describe User, type: :model do
       expect(User.register(attrs[:nick], attrs[:password], '             ', attrs[:email])).to be_nil
       expect(User.register(attrs[:nick], attrs[:password], 'Александр Пистолетов', attrs[:email])).to be_nil
     end
+
+    context('name having Polish diacritics') do
+      it 'registers name with lowercase letters' do
+        expect(User.register(attrs[:nick], attrs[:password], 'zażółć gęślą jaźń', attrs[:email])).to be_truthy
+      end
+      it 'registers name with uppercase letters' do
+        expect(User.register(attrs[:nick], attrs[:password], 'ZAŻÓŁĆ GĘŚLĄ JAŹŃ', attrs[:email])).to be_truthy
+      end
+    end
   end
 
   describe '.change_password .login' do
