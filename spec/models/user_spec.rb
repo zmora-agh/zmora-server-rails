@@ -15,6 +15,11 @@ RSpec.describe User, type: :model do
 
   describe '.register' do
     let(:attrs) { attributes_for(:user) }
+
+    it 'registers valid user' do
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], attrs[:email])).to be_truthy
+    end
+
     it "can't register 2 users with the same nick/email" do
       expect(User.register(attrs[:nick], attrs[:password],
                            attrs[:name], attrs[:email])).not_to be_nil
