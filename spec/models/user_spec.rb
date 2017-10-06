@@ -15,6 +15,11 @@ RSpec.describe User, type: :model do
 
   describe '.register' do
     let(:attrs) { attributes_for(:user) }
+
+    it 'registers valid user' do
+      expect(User.register(attrs[:nick], attrs[:password], attrs[:name], attrs[:email])).to be_truthy
+    end
+
     it "can't register 2 users with the same nick/email" do
       expect(User.register(attrs[:nick], attrs[:password],
                            attrs[:name], attrs[:email])).not_to be_nil
@@ -46,6 +51,15 @@ RSpec.describe User, type: :model do
       expect(User.register(attrs[:nick], attrs[:password], '', attrs[:email])).to be_nil
       expect(User.register(attrs[:nick], attrs[:password], '             ', attrs[:email])).to be_nil
       expect(User.register(attrs[:nick], attrs[:password], 'Александр Пистолетов', attrs[:email])).to be_nil
+    end
+
+    context('name having Polish diacritics') do
+      it 'registers name with lowercase letters' do
+        expect(User.register(attrs[:nick], attrs[:password], 'zażółć gęślą jaźń', attrs[:email])).to be_truthy
+      end
+      it 'registers name with uppercase letters' do
+        expect(User.register(attrs[:nick], attrs[:password], 'ZAŻÓŁĆ GĘŚLĄ JAŹŃ', attrs[:email])).to be_truthy
+      end
     end
   end
 
