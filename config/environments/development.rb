@@ -44,8 +44,8 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
-  
-  config.rabbitmq_uri = 'amqp://localhost'
+
+  config.rabbitmq_uri = ENV["ZMORA_RABBITMQ_URI"] || 'amqp://localhost'
   config.tasks_queue_name = 'tasks'
   config.tasks_results_queue_name = 'tasksResults'
   config.tasks_results_error_queue_name = 'tasksResultsError'
