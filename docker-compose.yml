@@ -1,0 +1,52 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile-devel
+    volumes:
+      - ./:/opt/zmora-server
+    environment:
+      ZMORA_DB_HOST: db
+      ZMORA_DB_USER: zmora
+      ZMORA_DB_PASSWORD: szatan
+      ZMORA_DB_NAME: zmora
+      ZMORA_RABBITMQ_URI: "amqp://zmora:szatan@rabbitmq"
+    ports:
+      - "127.0.0.1:3001:3001"
+    restart: always
+  ui:
+    image: zmoraagh/zmora-ui
+    environment:
+      API_URI: "http://localhost:3001"
+    ports:
+      - "127.0.0.1:3000:80"
+    restart: always
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: szatan
+      POSTGRES_USER: zmora
+      POSTGRES_DB: zmora
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - psql-db:/var/lib/postgresql/data
+    restart: always
+  rabbitmq:
+    image: "rabbitmq:3.6.11-management"
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_VM_MEMORY_HIGH_WATERMARK: 256MiB
+      RABBITMQ_DEFAULT_USER: zmora
+      RABBITMQ_DEFAULT_PASS: szatan
+    ports:
+      - "127.0.0.1:15672:15672"
+    restart: always
+  judge:
+    image: zmoraagh/zmora-judge
+    environment:
+      ZMORA_RABBITMQ_URI: "amqp://zmora:szatan@rabbitmq"
+    restart: always
+volumes:
+  psql-db:
