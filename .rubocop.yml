@@ -1,12 +1,12 @@
 AllCops:
   TargetRubyVersion: 2.3
   Exclude:
-    - 'vendor/**'
     - 'bin/*'
     - 'db/**/*'
     - 'config/**/*'
     - 'lib/*_pb.rb'
     - 'spec/*_helper.rb'
+    - 'vendor/**/*'
 
 Metrics/BlockLength:
   ExcludedMethods: ['describe']
