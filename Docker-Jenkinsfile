@@ -1,0 +1,14 @@
+node {
+	def app
+	stage("Clone repository") {
+		checkout scm
+	}
+	stage("Build") {
+		app = docker.build("zmora-server")
+	}
+	stage("Publish") {
+		docker.withRegistry('http://localhost:5000') {
+			app.push("${env.BRANCH_NAME.replaceAll('/','_')}")
+		}
+	}
+}
